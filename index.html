@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TuProfe20 Lab: Aritmética Sexto Grado | Probabilidad</title>
+    
+    <!-- Tailwind CSS, React 18, ReactDOM y Babel -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- KaTeX para renderizado matemático nítido -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100vw;
+            height: 100dvh;
+            user-select: none;
+            font-family: 'Nunito', sans-serif;
+        }
+        .font-fun { font-family: 'Nunito', sans-serif; }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(105vh) rotate(0deg); }
+            100% { transform: translateY(-105vh) rotate(360deg); }
+        }
+        @keyframes slideInRight {
+            0% { opacity: 0; transform: translateX(16px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes jellyPop {
+            0% { transform: scale3d(.3, .3, .3); opacity: 0; }
+            25% { transform: scale3d(1.12, 1.12, 1.12); }
+            50% { transform: scale3d(.94, .94, .94); opacity: 1; }
+            75% { transform: scale3d(1.04, 1.04, 1.04); }
+            100% { transform: scale3d(1, 1, 1); opacity: 1; }
+        }
+        @keyframes robotFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes robotThinkTilt {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(6deg) translateY(-3px); }
+        }
+        @keyframes robotJump {
+            0%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-14px); }
+        }
+        @keyframes robotTalkArmL {
+            0%, 100% { transform: rotate(45deg); }
+            50% { transform: rotate(95deg); }
+        }
+        @keyframes robotTalkArmR {
+            0%, 100% { transform: rotate(-45deg); }
+            50% { transform: rotate(-95deg); }
+        }
+        @keyframes svgPop {
+            0% { opacity: 0; transform: scale(0.65); }
+            70% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes drawBranch {
+            from { stroke-dashoffset: 300; }
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes pulseGold {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.7)); }
+            50% { filter: drop-shadow(0 0 12px rgba(245, 158, 11, 1)); }
+        }
+        @keyframes confettiExplosion {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--rot)); opacity: 0; }
+        }
+        @keyframes finalGlow {
+            0%, 100% { background-color: rgba(254, 240, 138, 0.35); }
+            50% { background-color: rgba(253, 224, 71, 0.65); }
+        }
+
+        /* Ocultar scrollbars manteniendo desplazamiento suave */
+        .scrollbar-hide::-webkit-scrollbar { display: none !important; }
+        .scrollbar-hide { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+
+        .animate-floatUp { animation: floatUp linear infinite; }
+        .animate-slideInRight { animation: slideInRight 0.35s ease-out forwards; }
+        .animate-jellyPop { animation: jellyPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .animate-robotFloat { animation: robotFloat 3s ease-in-out infinite; }
+        .animate-robotThinkTilt { animation: robotThinkTilt 2s ease-in-out infinite; }
+        .animate-robotJump { animation: robotJump 1s cubic-bezier(0.28, 0.84, 0.42, 1) infinite; }
+        .animate-robotTalkArmL { animation: robotTalkArmL 0.6s ease-in-out infinite; }
+        .animate-robotTalkArmR { animation: robotTalkArmR 0.6s ease-in-out infinite 0.1s; }
+        .animate-confettiExplosion { animation: confettiExplosion 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        .animate-pulseGold { animation: pulseGold 1.6s ease-in-out infinite; }
+        .animate-finalGlow { animation: finalGlow 2s ease-in-out infinite; }
+
+        .svg-pop {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: svgPop 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        .branch-draw {
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+            animation: drawBranch 0.55s ease-out forwards;
+        }
+
+        /* Estilos KaTeX responsivos y sin desbordes */
+        .katex { font-weight: 800 !important; }
+        .katex-display { margin: 0 !important; padding: 0 !important; }
+
+        .math-card .katex { font-size: clamp(0.82rem, 1.2vw, 1.08rem) !important; color: #0f172a !important; }
+        .math-enunciado .katex { font-size: clamp(1rem, 1.55vw, 1.3rem) !important; color: #fde047 !important; }
+        .math-current .katex { font-size: clamp(1.02rem, 1.55vw, 1.48rem) !important; color: #0f172a !important; }
+        .math-final .katex { font-size: clamp(1.08rem, 1.65vw, 1.56rem) !important; color: #065f46 !important; }
+        .math-history .katex { font-size: clamp(0.88rem, 1.25vw, 1.2rem) !important; color: #475569 !important; }
+
+        .math-flow-line {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            padding: 0.2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, memo } = React;
+
+        // =========================================================================
+        // 1. ICONOS SVG INLINE
+        // =========================================================================
+        const Icon = ({ paths, className = "", size = 24, fill = "none", strokeWidth = "2.5" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} dangerouslySetInnerHTML={{__html: paths}} />
+        );
+
+        const VolumeX = (p) => <Icon {...p} paths='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>' />;
+        const Volume2 = (p) => <Icon {...p} paths='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>' />;
+        const Rocket = (p) => <Icon {...p} paths='<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>' />;
+        const Sparkles = (p) => <Icon {...p} paths='<path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M3 5h4"/><path d="M19 3v4"/><path d="M17 5h4"/>' />;
+        const Home = (p) => <Icon {...p} paths='<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>' />;
+        const ChevronLeft = (p) => <Icon {...p} paths='<polyline points="15 18 9 12 15 6"/>' />;
+        const ChevronRight = (p) => <Icon {...p} paths='<polyline points="9 18 15 12 9 6"/>' />;
+        const Shapes = (p) => <Icon {...p} paths='<path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/>' />;
+
+        // =========================================================================
+        // 2. CONTROLADOR DE AUDIO (WEB AUDIO API)
+        // =========================================================================
+        const AudioController = {
+            ctx: null, muted: false, bgmNode: null,
+            init: function() {
+                if (this.ctx) return;
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) this.ctx = new AudioContext();
+            },
+            startBGM: function() {
+                if (!this.ctx) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+                if (this.bgmNode) return;
+                const mainGain = this.ctx.createGain();
+                mainGain.gain.value = this.muted ? 0 : 0.06;
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 780;
+                filter.connect(mainGain);
+                mainGain.connect(this.ctx.destination);
+                this.bgmNode = { mainGain, filter, interval: null };
+                const chords = [ [55, 60, 64, 71], [52, 57, 64, 71], [53, 57, 60, 64], [50, 55, 59, 64] ];
+                let chordIndex = 0;
+                const playChord = () => {
+                    if (this.ctx.state !== 'running') return;
+                    const chord = chords[chordIndex];
+                    chordIndex = (chordIndex + 1) % chords.length;
+                    chord.forEach((midi, i) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = 440 * Math.pow(2, (midi - 69) / 12);
+                        const now = this.ctx.currentTime;
+                        const delay = i * 0.2;
+                        gain.gain.setValueAtTime(0, now + delay);
+                        gain.gain.linearRampToValueAtTime(0.14, now + delay + 2);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 7.5);
+                        osc.connect(gain);
+                        gain.connect(filter);
+                        osc.start(now + delay);
+                        osc.stop(now + delay + 7.5);
+                    });
+                };
+                playChord();
+                this.bgmNode.interval = setInterval(playChord, 6000);
+            },
+            play: function(type) {
+                if (this.muted || !this.ctx) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                const now = this.ctx.currentTime;
+                if (type === 'pop') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(840, now + 0.1);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.start(now);
+                    osc.stop(now + 0.1);
+                } else if (type === 'pop-reverse') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(640, now);
+                    osc.frequency.exponentialRampToValueAtTime(280, now + 0.12);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } else if (type === 'success') {
+                    osc.disconnect();
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, i) => {
+                        const o = this.ctx.createOscillator();
+                        const g = this.ctx.createGain();
+                        o.type = 'triangle';
+                        o.frequency.value = freq;
+                        o.connect(g);
+                        g.connect(this.ctx.destination);
+                        const startTime = now + (i * 0.07);
+                        g.gain.setValueAtTime(0, startTime);
+                        g.gain.linearRampToValueAtTime(0.18, startTime + 0.04);
+                        g.gain.linearRampToValueAtTime(0, startTime + 0.35);
+                        o.start(startTime);
+                        o.stop(startTime + 0.35);
+                    });
+                } else if (type === 'swoosh') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(280, now);
+                    osc.frequency.exponentialRampToValueAtTime(75, now + 0.18);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+                    osc.start(now);
+                    osc.stop(now + 0.18);
+                }
+            },
+            toggleMute: function() {
+                this.muted = !this.muted;
+                if (this.bgmNode && this.ctx) {
+                    this.bgmNode.mainGain.gain.setTargetAtTime(this.muted ? 0 : 0.06, this.ctx.currentTime, 0.1);
+                }
+                return this.muted;
+            }
+        };
+
+        // =========================================================================
+        // 3. COMPONENTE KATEX
+        // =========================================================================
+        const MathDisplay = memo(({ latex, className = "", inline = false, align = "left" }) => {
+            const containerRef = useRef(null);
+            useEffect(() => {
+                if (containerRef.current && window.katex) {
+                    try {
+                        window.katex.render(latex, containerRef.current, {
+                            displayMode: !inline,
+                            throwOnError: false,
+                            strict: false,
+                            trust: true
+                        });
+                    } catch (e) {
+                        containerRef.current.innerText = latex;
+                    }
+                }
+            }, [latex, inline]);
+
+            if (inline) {
+                return <span ref={containerRef} className={`inline-block align-middle ${className}`} />;
+            }
+            return (
+                <div className={`math-flow-line scrollbar-hide ${align === 'center' ? 'justify-center' : 'justify-start'} ${className}`}>
+                    <div ref={containerRef} className={align === 'center' ? 'text-center' : 'text-left'} />
+                </div>
+            );
+        });
+
+        // =========================================================================
+        // 4. PIZARRA DIGITAL INTERACTIVA (HERRAMIENTAS COMPLETAS)
+        // =========================================================================
+        const DrawingCanvas = () => {
+            const canvasRef = useRef(null);
+            const [isDrawing, setIsDrawing] = useState(false);
+            const [isDrawMode, setIsDrawMode] = useState(false);
+            const [tool, setTool] = useState('pen');
+            const [isSnapMode, setIsSnapMode] = useState(false);
+            const [penColor, setPenColor] = useState('#ef4444');
+            const [penWidth, setPenWidth] = useState(6);
+            const penPointsRef = useRef([]);
+            const activePointerRef = useRef(null);
+            const savedImageRef = useRef(null);
+            const startPosRef = useRef({ x: 0, y: 0 });
+            const historyRef = useRef([]);
+
+            const playPop = () => { AudioController.init(); AudioController.startBGM(); AudioController.play('pop'); };
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                if (!canvas || !canvas.parentElement) return;
+                const updateSize = (entries) => {
+                    for (let entry of entries) {
+                        const { width, height } = entry.contentRect;
+                        const ctx = canvas.getContext('2d');
+                        let imgData = null;
+                        if (canvas.width > 0 && canvas.height > 0) {
+                            try { imgData = ctx.getImageData(0, 0, canvas.width, canvas.height); } catch (e) {}
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        if (imgData) ctx.putImageData(imgData, 0, 0);
+                    }
+                };
+                const observer = new ResizeObserver(updateSize);
+                observer.observe(canvas.parentElement);
+                return () => observer.disconnect();
+            }, []);
+
+            const renderPen = (points, straight = false) => {
+                const ctx = canvasRef.current.getContext('2d');
+                ctx.putImageData(savedImageRef.current, 0, 0);
+                const angle = -15 * Math.PI / 180;
+                const c = Math.cos(angle), s = Math.sin(angle);
+                const local = points.map(p => ({ x: c * p.x + s * p.y, y: (-s * p.x + c * p.y) / 0.5 }));
+                ctx.save();
+                ctx.transform(c, s, -0.5 * s, 0.5 * c, 0, 0);
+                ctx.lineWidth = penWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = penColor;
+                ctx.fillStyle = penColor;
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.beginPath();
+                ctx.moveTo(local[0].x, local[0].y);
+                if (local.length === 1) {
+                    ctx.arc(local[0].x, local[0].y, penWidth / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    if (!straight) {
+                        for (let i = 1; i < local.length - 1; i++) {
+                            const midpoint = { x: (local[i].x + local[i + 1].x) / 2, y: (local[i].y + local[i + 1].y) / 2 };
+                            ctx.quadraticCurveTo(local[i].x, local[i].y, midpoint.x, midpoint.y);
+                        }
+                    }
+                    const last = local[local.length - 1];
+                    ctx.lineTo(last.x, last.y);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            };
+
+            const startDrawing = (e) => {
+                if (!isDrawMode || activePointerRef.current !== null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                const rect = canvas.getBoundingClientRect();
+                
+                historyRef.current.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.lineWidth = tool === 'highlighter' ? 24 : penWidth;
+                ctx.strokeStyle = tool === 'highlighter' ? `${penColor}4D` : penColor;
+                ctx.globalCompositeOperation = tool === 'highlighter' ? 'multiply' : 'source-over';
+
+                const startX = e.clientX - rect.left;
+                const startY = e.clientY - rect.top;
+                
+                savedImageRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                startPosRef.current = { x: startX, y: startY };
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                penPointsRef.current = [{ x: startX, y: startY }];
+                activePointerRef.current = e.pointerId;
+                canvas.setPointerCapture(e.pointerId);
+                if (tool === 'pen') renderPen(penPointsRef.current);
+                setIsDrawing(true);
+            };
+
+            const draw = (e) => {
+                if (activePointerRef.current !== e.pointerId || !isDrawMode) return;
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                const rect = canvas.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+
+                if (isSnapMode || e.shiftKey) {
+                    ctx.putImageData(savedImageRef.current, 0, 0);
+                    const dx = currentX - startPosRef.current.x;
+                    const dy = currentY - startPosRef.current.y;
+                    const angle = Math.atan2(dy, dx);
+                    const snappedAngle = Math.round(angle / (Math.PI / 4)) * (Math.PI / 4);
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const snapX = startPosRef.current.x + Math.cos(snappedAngle) * dist;
+                    const snapY = startPosRef.current.y + Math.sin(snappedAngle) * dist;
+                    if (tool === 'pen') { renderPen([startPosRef.current, { x: snapX, y: snapY }], true); return; }
+                    ctx.beginPath(); ctx.moveTo(startPosRef.current.x, startPosRef.current.y); ctx.lineTo(snapX, snapY); ctx.stroke();
+                } else {
+                    if (tool === 'pen') {
+                        const events = e.nativeEvent?.getCoalescedEvents?.() || [];
+                        const samples = events.length ? events : [e];
+                        samples.forEach(sample => penPointsRef.current.push({ x: sample.clientX - rect.left, y: sample.clientY - rect.top }));
+                        renderPen(penPointsRef.current); return;
+                    }
+                    if (tool === 'highlighter') ctx.putImageData(savedImageRef.current, 0, 0);
+                    ctx.lineTo(currentX, currentY); ctx.stroke();
+                }
+            };
+
+            const stopDrawing = () => {
+                const canvas = canvasRef.current;
+                const pointer = activePointerRef.current;
+                activePointerRef.current = null;
+                if (pointer !== null && canvas.hasPointerCapture(pointer)) canvas.releasePointerCapture(pointer);
+                if (isDrawing) { canvas.getContext('2d').closePath(); setIsDrawing(false); }
+            };
+
+            const selectTool = (nextTool) => {
+                stopDrawing(); playPop();
+                const enabled = nextTool !== 'selector' && !(isDrawMode && tool === nextTool);
+                setIsDrawMode(enabled);
+                if (nextTool !== 'selector') setTool(nextTool);
+            };
+
+            useEffect(() => {
+                const onKey = (event) => {
+                    if (event.key === 'Escape') { setIsDrawing(false); setIsDrawMode(false); }
+                    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+                        if (historyRef.current.length > 0) {
+                            playPop();
+                            const lastState = historyRef.current.pop();
+                            const canvas = canvasRef.current;
+                            canvas.getContext('2d').putImageData(lastState, 0, 0);
+                            savedImageRef.current = lastState;
+                        }
+                    }
+                };
+                window.addEventListener('keydown', onKey);
+                return () => window.removeEventListener('keydown', onKey);
+            }, []);
+
+            const clearCanvas = () => {
+                playPop();
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                historyRef.current.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                savedImageRef.current = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            };
+
+            const colors = [
+                { name: 'Rojo', hex: '#ef4444', tw: 'bg-[#ef4444]' },
+                { name: 'Negro', hex: '#0f172a', tw: 'bg-[#0f172a]' },
+                { name: 'Azul', hex: '#3b82f6', tw: 'bg-[#3b82f6]' },
+                { name: 'Verde', hex: '#22c55e', tw: 'bg-[#22c55e]' },
+                { name: 'Amarillo', hex: '#facc15', tw: 'bg-[#facc15]' }
+            ];
+
+            return (
+                <>
+                    <div style={{zIndex: 120, pointerEvents: 'auto'}} className="absolute top-2 right-2 flex flex-wrap max-w-[calc(100%-1rem)] justify-end gap-1.5 sm:gap-2 pointer-events-auto bg-white/85 p-1.5 rounded-xl backdrop-blur-sm shadow-md border border-slate-200">
+                        <button onClick={() => selectTool('selector')} aria-pressed={!isDrawMode} title="Seleccionar (Esc)" className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-black rounded-lg border-2 shadow-sm transition-all ${!isDrawMode ? 'bg-cyan-500 text-white border-cyan-600' : 'bg-white text-slate-600 border-slate-300'}`}>🖱️ Selector</button>
+                        <button onClick={() => selectTool('pen')} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-black rounded-lg border-2 shadow-sm transition-all ${isDrawMode && tool === 'pen' ? 'bg-indigo-500 text-white border-indigo-600 scale-105' : 'bg-white text-slate-600 border-slate-300'}`}>🖊️ Lápiz</button>
+                        <button onClick={() => selectTool('highlighter')} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-black rounded-lg border-2 shadow-sm transition-all ${isDrawMode && tool === 'highlighter' ? 'bg-yellow-400 text-slate-900 border-yellow-500 scale-105' : 'bg-white text-slate-600 border-slate-300'}`}>🖍️ Resaltador</button>
+                        {isDrawMode && tool === 'pen' && (
+                            <label className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white border-2 border-indigo-200 text-xs font-black text-slate-700">
+                                Grosor <input type="range" min="3" max="16" step="1" value={penWidth} onChange={e => setPenWidth(Number(e.target.value))} className="w-16 accent-indigo-600" />
+                            </label>
+                        )}
+                        {isDrawMode && (
+                            <>
+                                <button onClick={() => { playPop(); setIsSnapMode(!isSnapMode); }} className={`px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-black rounded-lg border-2 shadow-sm transition-all ${isSnapMode ? 'bg-blue-500 text-white border-blue-600 scale-105' : 'bg-white text-slate-600 border-slate-300'}`}>📐 Recto</button>
+                                <button onClick={clearCanvas} className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-xs font-black bg-white text-rose-600 border-2 border-rose-300 rounded-lg shadow-sm hover:bg-rose-50 active:scale-95 transition-all">🗑️ Limpiar</button>
+                                <div className="px-2 py-1 text-[11px] font-bold text-slate-400 hidden sm:flex items-center bg-white rounded-lg border border-slate-200">CTRL+Z: Deshacer</div>
+                            </>
+                        )}
+                    </div>
+                    {isDrawMode && (
+                        <div className="absolute top-1/2 right-3 -translate-y-1/2 z-[110] flex flex-col gap-2.5 p-2 bg-white/90 backdrop-blur-md rounded-xl border-[3px] border-slate-200 shadow-xl pointer-events-auto">
+                            {colors.map(c => (
+                                <button key={c.hex} onClick={() => { playPop(); setPenColor(c.hex); }} title={c.name} className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full border-[3px] shadow-sm transition-all hover:scale-110 active:scale-95 ${c.tw} ${penColor === c.hex ? 'border-white outline outline-[3px] outline-slate-800 scale-110' : 'border-black/20'}`} />
+                            ))}
+                        </div>
+                    )}
+                    <canvas
+                        ref={canvasRef}
+                        style={{ zIndex: 100, pointerEvents: isDrawMode ? 'auto' : 'none', touchAction: isDrawMode ? 'none' : 'auto' }}
+                        className={`absolute inset-0 z-[100] touch-none ${isDrawMode ? 'cursor-crosshair pointer-events-auto' : 'pointer-events-none'}`}
+                        onPointerDown={startDrawing}
+                        onPointerMove={draw}
+                        onPointerUp={e => { if (activePointerRef.current === e.pointerId) { draw(e); stopDrawing(); } }}
+                        onPointerLeave={e => { if (!e.currentTarget.hasPointerCapture(e.pointerId)) stopDrawing(); }}
+                        onLostPointerCapture={stopDrawing}
+                        onPointerCancel={stopDrawing}
+                    />
+                </>
+            );
+        };
+
+        // =========================================================================
+        // 5. COMPONENTES AUXILIARES PARA ESQUEMAS GRÁFICOS SVG
+        // =========================================================================
+
+        // Dibuja una cara de dado nítida (1 al 6)
+        const DieFaceSVG = ({ x, y, size = 58, value = 1, fill = "#ffffff", stroke = "#4f46e5", pipColor = "#1e293b", opacity = 1, glow = false, badge = null, delay = 0 }) => {
+            const pipsMap = {
+                1: [[0.5, 0.5]],
+                2: [[0.28, 0.28], [0.72, 0.72]],
+                3: [[0.26, 0.26], [0.5, 0.5], [0.74, 0.74]],
+                4: [[0.28, 0.28], [0.72, 0.28], [0.28, 0.72], [0.72, 0.72]],
+                5: [[0.26, 0.26], [0.74, 0.26], [0.5, 0.5], [0.26, 0.74], [0.74, 0.74]],
+                6: [[0.28, 0.24], [0.72, 0.24], [0.28, 0.5], [0.72, 0.5], [0.28, 0.76], [0.72, 0.76]]
+            };
+            const pips = pipsMap[value] || [];
+            return (
+                <g opacity={opacity} className="svg-pop" style={{ animationDelay: `${delay}s` }}>
+                    {glow && (
+                        <rect x={x - 5} y={y - 5} width={size + 10} height={size + 10} rx="15" fill="none" stroke="#facc15" strokeWidth="4" className="animate-pulseGold" />
+                    )}
+                    <rect x={x} y={y} width={size} height={size} rx="12" fill={fill} stroke={stroke} strokeWidth="3.2" />
+                    {pips.map(([px, py], idx) => (
+                        <circle key={idx} cx={x + px * size} cy={y + py * size} r={size * 0.088} fill={pipColor} />
+                    ))}
+                    {badge && (
+                        <g>
+                            <circle cx={x + size - 3} cy={y + 3} r="12" fill={badge.bg} stroke="#ffffff" strokeWidth="2" />
+                            <text x={x + size - 3} y={y + 7} textAnchor="middle" fontSize="11" fontWeight="900" fill={badge.fg || "#ffffff"}>{badge.text}</text>
+                        </g>
+                    )}
+                </g>
+            );
+        };
+
+        // Genera un sector circular SVG
+        const describeSector = (cx, cy, r, startAngleDeg, endAngleDeg) => {
+            const rad = (deg) => (deg - 90) * Math.PI / 180;
+            const x1 = cx + r * Math.cos(rad(startAngleDeg));
+            const y1 = cy + r * Math.sin(rad(startAngleDeg));
+            const x2 = cx + r * Math.cos(rad(endAngleDeg));
+            const y2 = cy + r * Math.sin(rad(endAngleDeg));
+            const largeArc = (endAngleDeg - startAngleDeg) > 180 ? 1 : 0;
+            return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
+        };
+
+        // Moneda SVG estilizada (Cara = dorada, Sello = plateada)
+        const CoinSVG = ({ cx, cy, r = 17, side = 'C', delay = 0, glow = false }) => {
+            const isC = side === 'C';
+            return (
+                <g className="svg-pop" style={{ animationDelay: `${delay}s` }}>
+                    {glow && <circle cx={cx} cy={cy} r={r + 4} fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeDasharray="4 2" />}
+                    <circle cx={cx} cy={cy} r={r} fill={isC ? "#facc15" : "#cbd5e1"} stroke={isC ? "#b45309" : "#475569"} strokeWidth="2.5" />
+                    <circle cx={cx} cy={cy} r={r - 3.5} fill="none" stroke={isC ? "#fef08a" : "#f8fafc"} strokeWidth="1.5" strokeDasharray="3 2" />
+                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={r * 0.78} fontWeight="900" fill={isC ? "#78350f" : "#1e293b"}>{side}</text>
+                </g>
+            );
+        };
+
+        // =========================================================================
+        // 6. ESQUEMAS GRÁFICOS INTERACTIVOS PARA LOS 8 EJERCICIOS
+        // =========================================================================
+        const ProbabilityGraphic = memo(({ exerciseId, step }) => {
+
+            // --- EJERCICIO 1: ESPACIO MUESTRAL DE UN DADO ---
+            if (exerciseId === 1) {
+                if (step === 0) {
+                    return (
+                        <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Dado lanzándose sobre la mesa">
+                            <text x="270" y="28" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">Experimento Aleatorio: Lanzar un dado</text>
+                            {/* Mesa de madera */}
+                            <ellipse cx="270" cy="275" rx="220" ry="52" fill="#fed7aa" stroke="#ea580c" strokeWidth="4" />
+                            <ellipse cx="270" cy="268" rx="195" ry="38" fill="#ffedd5" />
+                            {/* Sombra del dado */}
+                            <ellipse cx="270" cy="252" rx="64" ry="16" fill="#9a3412" opacity="0.22" />
+                            {/* Dado 3D isométrico */}
+                            <g className="svg-pop">
+                                {/* Cara superior */}
+                                <polygon points="270,82 346,120 270,158 194,120" fill="#a855f7" stroke="#581c87" strokeWidth="3.5" strokeLinejoin="round" />
+                                {/* Cara izquierda */}
+                                <polygon points="194,120 270,158 270,242 194,204" fill="#7e22ce" stroke="#581c87" strokeWidth="3.5" strokeLinejoin="round" />
+                                {/* Cara derecha */}
+                                <polygon points="346,120 270,158 270,242 346,204" fill="#9333ea" stroke="#581c87" strokeWidth="3.5" strokeLinejoin="round" />
+                                {/* Puntos cara superior (2) */}
+                                <ellipse cx="244" cy="120" rx="8" ry="5" fill="#ffffff" />
+                                <ellipse cx="296" cy="120" rx="8" ry="5" fill="#ffffff" />
+                                {/* Puntos cara izquierda (3) */}
+                                <circle cx="215" cy="148" r="6" fill="#ffffff" />
+                                <circle cx="232" cy="180" r="6" fill="#ffffff" />
+                                <circle cx="249" cy="212" r="6" fill="#ffffff" />
+                                {/* Puntos cara derecha (5) */}
+                                <circle cx="291" cy="166" r="5.5" fill="#ffffff" />
+                                <circle cx="326" cy="148" r="5.5" fill="#ffffff" />
+                                <circle cx="308" cy="182" r="5.5" fill="#ffffff" />
+                                <circle cx="291" cy="216" r="5.5" fill="#ffffff" />
+                                <circle cx="326" cy="198" r="5.5" fill="#ffffff" />
+                            </g>
+                            {/* Signos de interrogación flotantes */}
+                            {[
+                                { x: 112, y: 120, c: '#3b82f6', d: 0.1 },
+                                { x: 425, y: 112, c: '#ec4899', d: 0.2 },
+                                { x: 138, y: 205, c: '#10b981', d: 0.3 },
+                                { x: 405, y: 205, c: '#f59e0b', d: 0.4 }
+                            ].map((q, i) => (
+                                <g key={i} className="svg-pop" style={{ animationDelay: `${q.d}s` }}>
+                                    <circle cx={q.x} cy={q.y} r="22" fill={q.c} opacity="0.16" />
+                                    <text x={q.x} y={q.y + 9} textAnchor="middle" fontSize="28" fontWeight="900" fill={q.c}>?</text>
+                                </g>
+                            ))}
+                            <rect x="95" y="312" width="350" height="34" rx="14" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2.5" />
+                            <text x="270" y="334" textAnchor="middle" fontSize="14" fontWeight="900" fill="#1d4ed8">¿Qué resultados pueden salir? → Espacio Muestral (Ω)</text>
+                        </svg>
+                    );
+                }
+
+                const isFinal = step === 2;
+                const faceColors = ['#eef2ff', '#ecfeff', '#ecfdf5', '#fefce8', '#fff7ed', '#fdf2f8'];
+                const faceStrokes = ['#6366f1', '#06b6d4', '#10b981', '#eab308', '#f97316', '#ec4899'];
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Conjunto espacio muestral de 6 caras del dado">
+                        <text x="270" y="26" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">
+                            {isFinal ? '¡Contamos los elementos dentro de Ω!' : 'Conjunto del Espacio Muestral (Ω)'}
+                        </text>
+                        {/* Óvalo/Contenedor de conjunto Ω */}
+                        <rect x="34" y="42" width="472" height="238" rx="34" fill="#f8fafc" stroke={isFinal ? "#f59e0b" : "#4f46e5"} strokeWidth="4" strokeDasharray={isFinal ? "none" : "10 6"} />
+                        <rect x="52" y="30" width="54" height="28" rx="10" fill={isFinal ? "#f59e0b" : "#4f46e5"} />
+                        <text x="79" y="50" textAnchor="middle" fontSize="17" fontWeight="900" fill="#ffffff">Ω</text>
+
+                        {[1, 2, 3, 4, 5, 6].map((v, i) => {
+                            const row = Math.floor(i / 3);
+                            const col = i % 3;
+                            const x = 96 + col * 140;
+                            const y = 78 + row * 102;
+                            return (
+                                <g key={v}>
+                                    <DieFaceSVG
+                                        x={x} y={y} size={68} value={v}
+                                        fill={faceColors[i]} stroke={faceStrokes[i]}
+                                        glow={isFinal} delay={i * 0.07}
+                                        badge={isFinal ? { text: `${v}º`, bg: '#f59e0b', fg: '#ffffff' } : null}
+                                    />
+                                    <text x={x + 34} y={y + 87} textAnchor="middle" fontSize="13" fontWeight="900" fill="#334155">Cara {v}</text>
+                                </g>
+                            );
+                        })}
+
+                        {/* Sello inferior */}
+                        <g className={isFinal ? "svg-pop" : ""}>
+                            <rect x="120" y="298" width="300" height="44" rx="16" fill={isFinal ? "#fde047" : "#e0e7ff"} stroke={isFinal ? "#ca8a04" : "#6366f1"} strokeWidth="3.5" />
+                            <text x="270" y="326" textAnchor="middle" fontSize="18" fontWeight="900" fill={isFinal ? "#713f12" : "#312e81"}>
+                                {isFinal ? '★ n(Ω) = 6 elementos ★' : 'Ω = { 1, 2, 3, 4, 5, 6 }'}
+                            </text>
+                        </g>
+                    </svg>
+                );
+            }
+
+            // --- EJERCICIO 2: DADO MENOR QUE 4 (3/6 = 1/2) ---
+            if (exerciseId === 2) {
+                if (step <= 1) {
+                    const showFav = step === 1;
+                    return (
+                        <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Caras del dado menores que 4">
+                            <text x="270" y="28" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">
+                                {showFav ? 'Casos Favorables: Números menores que 4 (< 4)' : 'Casos Totales al lanzar un dado'}
+                            </text>
+                            <rect x="24" y="54" width="492" height="175" rx="22" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="3" />
+                            {[1, 2, 3, 4, 5, 6].map((v, i) => {
+                                const x = 42 + i * 78;
+                                const y = 98;
+                                const isFav = v < 4;
+                                const active = !showFav || isFav;
+                                return (
+                                    <g key={v}>
+                                        <DieFaceSVG
+                                            x={x} y={y} size={64} value={v}
+                                            fill={showFav && isFav ? "#dcfce7" : "#ffffff"}
+                                            stroke={showFav && isFav ? "#16a34a" : "#64748b"}
+                                            opacity={active ? 1 : 0.3}
+                                            glow={showFav && isFav}
+                                            delay={i * 0.05}
+                                            badge={showFav && isFav ? { text: '✓', bg: '#16a34a' } : (showFav && v === 4 ? { text: '✕', bg: '#ef4444' } : null)}
+                                        />
+                                        <text x={x + 32} y={y + 84} textAnchor="middle" fontSize="14" fontWeight="900" fill={showFav && isFav ? "#15803d" : "#64748b"}>{v}</text>
+                                    </g>
+                                );
+                            })}
+                            {showFav && (
+                                <g className="svg-pop">
+                                    <line x1="270" y1="62" x2="270" y2="218" stroke="#ef4444" strokeWidth="3" strokeDasharray="6 4" />
+                                    <rect x="285" y="60" width="165" height="24" rx="8" fill="#fee2e2" stroke="#ef4444" strokeWidth="1.5" />
+                                    <text x="367" y="76" textAnchor="middle" fontSize="11.5" fontWeight="900" fill="#b91c1c">¡Ojo! El 4 no es menor que 4</text>
+                                </g>
+                            )}
+                            <rect x="75" y="262" width="390" height="52" rx="16" fill={showFav ? "#dcfce7" : "#e0e7ff"} stroke={showFav ? "#16a34a" : "#4f46e5"} strokeWidth="3" />
+                            <text x="270" y="294" textAnchor="middle" fontSize="17" fontWeight="900" fill={showFav ? "#166534" : "#312e81"}>
+                                {showFav ? 'A = {1, 2, 3}  →  n(A) = 3 casos favorables' : 'Casos totales: n(Ω) = 6 caras'}
+                            </text>
+                        </svg>
+                    );
+                }
+
+                // Pasos 2 (3/6) y 3 (Simplificado 1/2)
+                const isSimp = step === 3;
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Fracción circular 3/6 simplificada a 1/2">
+                        <text x="270" y="26" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">
+                            {isSimp ? 'Simplificación: ¡3 de 6 es exactamente la MITAD!' : 'Regla de Laplace: 3 sectores de 6'}
+                        </text>
+                        {/* Círculo */}
+                        <g className="svg-pop">
+                            {isSimp ? (
+                                <>
+                                    <path d={describeSector(175, 165, 102, 0, 180)} fill="#10b981" stroke="#ffffff" strokeWidth="5" />
+                                    <path d={describeSector(175, 165, 102, 180, 360)} fill="#e2e8f0" stroke="#ffffff" strokeWidth="5" />
+                                    <text x="225" y="172" textAnchor="middle" fontSize="24" fontWeight="900" fill="#ffffff">1/2</text>
+                                    <text x="125" y="172" textAnchor="middle" fontSize="16" fontWeight="900" fill="#64748b">50%</text>
+                                </>
+                            ) : (
+                                [0, 1, 2, 3, 4, 5].map(i => (
+                                    <path
+                                        key={i}
+                                        d={describeSector(175, 165, 102, i * 60, (i + 1) * 60)}
+                                        fill={i < 3 ? "#10b981" : "#e2e8f0"}
+                                        stroke="#ffffff"
+                                        strokeWidth="4"
+                                    />
+                                ))
+                            )}
+                            <circle cx="175" cy="165" r="24" fill="#ffffff" stroke="#0f172a" strokeWidth="3.5" />
+                            <text x="175" y="171" textAnchor="middle" fontSize="14" fontWeight="900" fill="#0f172a">{isSimp ? '1/2' : '3/6'}</text>
+                        </g>
+
+                        {/* Panel explicativo derecho */}
+                        <g className="svg-pop">
+                            <rect x="315" y="88" width="195" height="152" rx="20" fill={isSimp ? "#fef9c3" : "#f0fdf4"} stroke={isSimp ? "#eab308" : "#16a34a"} strokeWidth="3.5" />
+                            <text x="412" y="124" textAnchor="middle" fontSize="14" fontWeight="900" fill="#334155">
+                                {isSimp ? 'FRACCIÓN EQUIVALENTE' : 'PROBABILIDAD'}
+                            </text>
+                            <text x="412" y="172" textAnchor="middle" fontSize="38" fontWeight="900" fill={isSimp ? "#b45309" : "#15803d"}>
+                                {isSimp ? '1 / 2' : '3 / 6'}
+                            </text>
+                            <text x="412" y="210" textAnchor="middle" fontSize="15" fontWeight="900" fill="#475569">
+                                {isSimp ? '= 0.50 = 50%' : '3 verdes de 6 totales'}
+                            </text>
+                        </g>
+
+                        {/* Barra comparativa inferior */}
+                        <g>
+                            {Array.from({ length: isSimp ? 2 : 6 }).map((_, i) => {
+                                const w = 440 / (isSimp ? 2 : 6);
+                                const isLit = isSimp ? i === 0 : i < 3;
+                                return (
+                                    <rect
+                                        key={i}
+                                        x={50 + i * w + 3}
+                                        y={292}
+                                        width={w - 6}
+                                        height={38}
+                                        rx="8"
+                                        fill={isLit ? "#10b981" : "#e2e8f0"}
+                                        stroke={isLit ? "#065f46" : "#94a3b8"}
+                                        strokeWidth="2.5"
+                                    />
+                                );
+                            })}
+                        </g>
+                    </svg>
+                );
+            }
+
+            // --- EJERCICIO 3: DADO MENOR QUE 3 (2/6 = 1/3) ---
+            if (exerciseId === 3) {
+                if (step <= 1) {
+                    const showFav = step === 1;
+                    return (
+                        <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Caras del dado menores que 3">
+                            <text x="270" y="28" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">
+                                {showFav ? 'Casos Favorables: Números menores que 3 (< 3)' : 'Casos Totales al lanzar un dado'}
+                            </text>
+                            <rect x="24" y="54" width="492" height="175" rx="22" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="3" />
+                            {[1, 2, 3, 4, 5, 6].map((v, i) => {
+                                const x = 42 + i * 78;
+                                const y = 98;
+                                const isFav = v < 3;
+                                const active = !showFav || isFav;
+                                return (
+                                    <g key={v}>
+                                        <DieFaceSVG
+                                            x={x} y={y} size={64} value={v}
+                                            fill={showFav && isFav ? "#dbeafe" : "#ffffff"}
+                                            stroke={showFav && isFav ? "#2563eb" : "#64748b"}
+                                            opacity={active ? 1 : 0.28}
+                                            glow={showFav && isFav}
+                                            delay={i * 0.05}
+                                            badge={showFav && isFav ? { text: '✓', bg: '#2563eb' } : (showFav && v === 3 ? { text: '✕', bg: '#ef4444' } : null)}
+                                        />
+                                        <text x={x + 32} y={y + 84} textAnchor="middle" fontSize="14" fontWeight="900" fill={showFav && isFav ? "#1d4ed8" : "#64748b"}>{v}</text>
+                                    </g>
+                                );
+                            })}
+                            {showFav && (
+                                <g className="svg-pop">
+                                    <line x1="192" y1="62" x2="192" y2="218" stroke="#ef4444" strokeWidth="3" strokeDasharray="6 4" />
+                                    <rect x="205" y="60" width="175" height="24" rx="8" fill="#fee2e2" stroke="#ef4444" strokeWidth="1.5" />
+                                    <text x="292" y="76" textAnchor="middle" fontSize="11.5" fontWeight="900" fill="#b91c1c">El 3 no entra (solo 1 y 2)</text>
+                                </g>
+                            )}
+                            <rect x="75" y="262" width="390" height="52" rx="16" fill={showFav ? "#dbeafe" : "#e0e7ff"} stroke={showFav ? "#2563eb" : "#4f46e5"} strokeWidth="3" />
+                            <text x="270" y="294" textAnchor="middle" fontSize="17" fontWeight="900" fill={showFav ? "#1e40af" : "#312e81"}>
+                                {showFav ? 'B = {1, 2}  →  n(B) = 2 casos favorables' : 'Casos totales: n(Ω) = 6 caras'}
+                            </text>
+                        </svg>
+                    );
+                }
+
+                const isSimp = step === 3;
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Fracción 2/6 simplificada a 1/3">
+                        <text x="270" y="26" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">
+                            {isSimp ? 'Agrupando de 2 en 2: ¡1 tercio completo (1/3)!' : 'Regla de Laplace: 2 sectores de 6'}
+                        </text>
+                        <g className="svg-pop">
+                            {isSimp ? (
+                                [0, 1, 2].map(i => (
+                                    <path
+                                        key={i}
+                                        d={describeSector(175, 165, 102, i * 120, (i + 1) * 120)}
+                                        fill={i === 0 ? "#2563eb" : "#e2e8f0"}
+                                        stroke="#ffffff"
+                                        strokeWidth="5"
+                                    />
+                                ))
+                            ) : (
+                                [0, 1, 2, 3, 4, 5].map(i => (
+                                    <path
+                                        key={i}
+                                        d={describeSector(175, 165, 102, i * 60, (i + 1) * 60)}
+                                        fill={i < 2 ? "#2563eb" : "#e2e8f0"}
+                                        stroke="#ffffff"
+                                        strokeWidth="4"
+                                    />
+                                ))
+                            )}
+                            <circle cx="175" cy="165" r="24" fill="#ffffff" stroke="#0f172a" strokeWidth="3.5" />
+                            <text x="175" y="171" textAnchor="middle" fontSize="14" fontWeight="900" fill="#0f172a">{isSimp ? '1/3' : '2/6'}</text>
+                        </g>
+
+                        <g className="svg-pop">
+                            <rect x="315" y="88" width="195" height="152" rx="20" fill={isSimp ? "#fef9c3" : "#eff6ff"} stroke={isSimp ? "#eab308" : "#2563eb"} strokeWidth="3.5" />
+                            <text x="412" y="124" textAnchor="middle" fontSize="14" fontWeight="900" fill="#334155">
+                                {isSimp ? 'SIMPLIFICADO (÷2)' : 'PROBABILIDAD'}
+                            </text>
+                            <text x="412" y="172" textAnchor="middle" fontSize="38" fontWeight="900" fill={isSimp ? "#b45309" : "#1d4ed8"}>
+                                {isSimp ? '1 / 3' : '2 / 6'}
+                            </text>
+                            <text x="412" y="210" textAnchor="middle" fontSize="14" fontWeight="900" fill="#475569">
+                                {isSimp ? '1 grupo de 3 iguales' : '2 azules de 6 totales'}
+                            </text>
+                        </g>
+
+                        {/* Barra inferior */}
+                        <g>
+                            {Array.from({ length: isSimp ? 3 : 6 }).map((_, i) => {
+                                const w = 440 / (isSimp ? 3 : 6);
+                                const isLit = isSimp ? i === 0 : i < 2;
+                                return (
+                                    <rect
+                                        key={i}
+                                        x={50 + i * w + 3}
+                                        y={292}
+                                        width={w - 6}
+                                        height={38}
+                                        rx="8"
+                                        fill={isLit ? "#2563eb" : "#e2e8f0"}
+                                        stroke={isLit ? "#1e3a8a" : "#94a3b8"}
+                                        strokeWidth="2.5"
+                                    />
+                                );
+                            })}
+                        </g>
+                    </svg>
+                );
+            }
+
+            // --- EJERCICIO 4: BARAJA DE 52 CARTAS (AS = 4/52 = 1/13) ---
+            if (exerciseId === 4) {
+                const suits = [
+                    { sym: '♥', color: '#dc2626', name: 'Corazones' },
+                    { sym: '♦', color: '#dc2626', name: 'Diamantes' },
+                    { sym: '♣', color: '#0f172a', name: 'Tréboles' },
+                    { sym: '♠', color: '#0f172a', name: 'Picas' }
+                ];
+                const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+                if (step <= 1) {
+                    const showAces = step === 1;
+                    return (
+                        <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Matriz de 52 cartas de la baraja">
+                            <text x="270" y="24" textAnchor="middle" fontSize="15.5" fontWeight="900" fill="#1e293b">
+                                {showAces ? 'Casos Favorables: ¡Los 4 Ases en la columna 1!' : 'Baraja Completa: 4 palos × 13 cartas = 52'}
+                            </text>
+                            <rect x="20" y="38" width="500" height="240" rx="18" fill="#f8fafc" stroke="#334155" strokeWidth="3" />
+                            {showAces && (
+                                <rect x="46" y="46" width="38" height="224" rx="10" fill="#fef08a" stroke="#eab308" strokeWidth="3.5" className="svg-pop" />
+                            )}
+                            {suits.map((s, r) => (
+                                <g key={r}>
+                                    <text x="34" y={81 + r * 54} textAnchor="middle" fontSize="18" fontWeight="900" fill={s.color}>{s.sym}</text>
+                                    {ranks.map((rk, c) => {
+                                        const isAce = c === 0;
+                                        const x = 51 + c * 35.5;
+                                        const y = 55 + r * 54;
+                                        const active = !showAces || isAce;
+                                        return (
+                                            <g key={c} opacity={active ? 1 : 0.25}>
+                                                <rect x={x} y={y} width="29" height="42" rx="5" fill={showAces && isAce ? "#fde047" : "#ffffff"} stroke={showAces && isAce ? "#b45309" : "#94a3b8"} strokeWidth={showAces && isAce ? "2.5" : "1.5"} />
+                                                <text x={x + 14.5} y={y + 26} textAnchor="middle" fontSize="12" fontWeight="900" fill={s.color}>{rk}</text>
+                                            </g>
+                                        );
+                                    })}
+                                </g>
+                            ))}
+                            <rect x="70" y="294" width="400" height="46" rx="14" fill={showAces ? "#fef08a" : "#e0e7ff"} stroke={showAces ? "#ca8a04" : "#4f46e5"} strokeWidth="3" />
+                            <text x="270" y="323" textAnchor="middle" fontSize="16" fontWeight="900" fill={showAces ? "#713f12" : "#312e81"}>
+                                {showAces ? '4 Ases: A♥, A♦, A♣, A♠  →  n(C) = 4' : '4 filas × 13 columnas = 52 cartas totales'}
+                            </text>
+                        </svg>
+                    );
+                }
+
+                if (step === 2) {
+                    return (
+                        <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="4 ases sobre 52 cartas">
+                            <text x="270" y="26" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">Regla de Laplace: 4 Ases de 52 Cartas</text>
+                            {/* 4 Cartas grandes de As */}
+                            {suits.map((s, i) => {
+                                const x = 56 + i * 112;
+                                return (
+                                    <g key={i} className="svg-pop" style={{ animationDelay: `${i * 0.08}s` }}>
+                                        <rect x={x} y="56" width="90" height="128" rx="12" fill="#ffffff" stroke="#eab308" strokeWidth="4" />
+                                        <text x={x + 14} y="80" fontSize="18" fontWeight="900" fill={s.color}>A</text>
+                                        <text x={x + 45} y="132" textAnchor="middle" fontSize="42" fontWeight="900" fill={s.color}>{s.sym}</text>
+                                        <text x={x + 76} y="172" textAnchor="end" fontSize="18" fontWeight="900" fill={s.color}>A</text>
+                                    </g>
+                                );
+                            })}
+                            {/* Línea de fracción visual */}
+                            <line x1="70" y1="212" x2="470" y2="212" stroke="#0f172a" strokeWidth="5" strokeLinecap="round" />
+                            <rect x="70" y="232" width="400" height="58" rx="16" fill="#e0e7ff" stroke="#4f46e5" strokeWidth="3.5" className="svg-pop" />
+                            <text x="270" y="268" textAnchor="middle" fontSize="20" fontWeight="900" fill="#312e81">52 Cartas Totales en la Baraja</text>
+                            <text x="270" y="330" textAnchor="middle" fontSize="17" fontWeight="900" fill="#b45309">P(As) = 4 / 52</text>
+                        </svg>
+                    );
+                }
+
+                // Paso 3: Zoom a 1 solo palo de 13 cartas -> 1/13
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Zoom a 1 palo de 13 cartas mostrando 1/13">
+                        <text x="270" y="26" textAnchor="middle" fontSize="15.5" fontWeight="900" fill="#1e293b">Simplificamos ÷ 4: Zoom a 1 solo palo (13 cartas)</text>
+                        <rect x="18" y="64" width="504" height="145" rx="20" fill="#fff1f2" stroke="#e11d48" strokeWidth="3.5" />
+                        {ranks.map((rk, i) => {
+                            const x = 28 + i * 37.5;
+                            const isAce = i === 0;
+                            return (
+                                <g key={rk} opacity={isAce ? 1 : 0.45} className="svg-pop" style={{ animationDelay: `${i * 0.03}s` }}>
+                                    <rect x={x} y={isAce ? 82 : 102} width="33" height={isAce ? 96 : 76} rx="6" fill={isAce ? "#fde047" : "#ffffff"} stroke={isAce ? "#b45309" : "#94a3b8"} strokeWidth={isAce ? "3.5" : "2"} />
+                                    <text x={x + 16.5} y={isAce ? 116 : 134} textAnchor="middle" fontSize={isAce ? "16" : "12"} fontWeight="900" fill="#dc2626">{rk}</text>
+                                    <text x={x + 16.5} y={isAce ? 154 : 160} textAnchor="middle" fontSize={isAce ? "22" : "15"} fill="#dc2626">♥</text>
+                                </g>
+                            );
+                        })}
+                        <rect x="75" y="242" width="390" height="82" rx="18" fill="#fef08a" stroke="#ca8a04" strokeWidth="4" className="svg-pop" />
+                        <text x="270" y="276" textAnchor="middle" fontSize="15" fontWeight="900" fill="#713f12">En cada palo hay exactamente 1 As de 13 cartas</text>
+                        <text x="270" y="308" textAnchor="middle" fontSize="24" fontWeight="900" fill="#065f46">4 / 52  =  1 / 13</text>
+                    </svg>
+                );
+            }
+
+            // --- EJERCICIO 5: URNA CON 15 BOLAS (6 negras, 4 rojas, 5 blancas -> 5/15 = 1/3) ---
+            if (exerciseId === 5) {
+                const balls = [
+                    ...Array(6).fill({ type: 'negra', fill: '#1e293b', stroke: '#0f172a', txt: 'N', fg: '#ffffff' }),
+                    ...Array(4).fill({ type: 'roja', fill: '#ef4444', stroke: '#991b1b', txt: 'R', fg: '#ffffff' }),
+                    ...Array(5).fill({ type: 'blanca', fill: '#ffffff', stroke: '#0284c7', txt: 'B', fg: '#0369a1' })
+                ];
+
+                // Paso 3: 3 filas de 5 bolas demostrando 1/3
+                if (step === 3) {
+                    const ordered = [
+                        ...Array(5).fill({ type: 'blanca', fill: '#ffffff', stroke: '#0284c7', txt: 'B', fg: '#0369a1' }),
+                        ...Array(5).fill({ type: 'negra', fill: '#1e293b', stroke: '#0f172a', txt: 'N', fg: '#ffffff' }),
+                        { type: 'negra', fill: '#1e293b', stroke: '#0f172a', txt: 'N', fg: '#ffffff' },
+                        ...Array(4).fill({ type: 'roja', fill: '#ef4444', stroke: '#991b1b', txt: 'R', fg: '#ffffff' })
+                    ];
+                    return (
+                        <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="15 bolas agrupadas en 3 filas de 5 mostrando 1/3">
+                            <text x="270" y="26" textAnchor="middle" fontSize="15.5" fontWeight="900" fill="#1e293b">Simplificamos ÷ 5: ¡3 grupos de 5 bolas → 1/3!</text>
+                            {[0, 1, 2].map(row => (
+                                <g key={row} opacity={row === 0 ? 1 : 0.35} className="svg-pop" style={{ animationDelay: `${row * 0.1}s` }}>
+                                    <rect x="46" y={50 + row * 78} width="350" height="64" rx="18" fill={row === 0 ? "#e0f2fe" : "#f1f5f9"} stroke={row === 0 ? "#0284c7" : "#94a3b8"} strokeWidth={row === 0 ? "4" : "2"} />
+                                    <text x="415" y={88 + row * 78} fontSize="15" fontWeight="900" fill={row === 0 ? "#0369a1" : "#64748b"}>
+                                        {row === 0 ? 'Grupo 1 (Blancas) ✓' : `Grupo ${row + 1}`}
+                                    </text>
+                                </g>
+                            ))}
+                            {ordered.map((b, i) => {
+                                const row = Math.floor(i / 5);
+                                const col = i % 5;
+                                const cx = 86 + col * 68;
+                                const cy = 82 + row * 78;
+                                return (
+                                    <g key={i} opacity={row === 0 ? 1 : 0.35}>
+                                        <circle cx={cx} cy={cy} r="22" fill={b.fill} stroke={b.stroke} strokeWidth="3" />
+                                        <text x={cx} y={cy + 5} textAnchor="middle" fontSize="13" fontWeight="900" fill={b.fg}>{b.txt}</text>
+                                    </g>
+                                );
+                            })}
+                            <rect x="105" y="294" width="330" height="48" rx="16" fill="#fef08a" stroke="#ca8a04" strokeWidth="3.5" className="svg-pop" />
+                            <text x="270" y="325" textAnchor="middle" fontSize="22" fontWeight="900" fill="#065f46">5 / 15  =  1 / 3</text>
+                        </svg>
+                    );
+                }
+
+                // Pasos 0, 1 y 2: Urna transparente con 15 bolas
+                const titles = [
+                    'Urna con 15 bolas: 6 negras, 4 rojas y ¿cuántas blancas?',
+                    '15 − (6 + 4) = 5 bolas blancas reveladas',
+                    'Regla de Laplace: 5 bolas blancas de 15 totales'
+                ];
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Urna con 15 bolas">
+                        <text x="270" y="24" textAnchor="middle" fontSize="15" fontWeight="900" fill="#1e293b">{titles[step]}</text>
+                        {/* Boca y cuerpo de la urna */}
+                        <rect x="180" y="34" width="180" height="16" rx="6" fill="#94a3b8" stroke="#475569" strokeWidth="2.5" />
+                        <rect x="65" y="50" width="410" height="195" rx="26" fill="#f0f9ff" stroke="#0284c7" strokeWidth="4" />
+                        {balls.map((b, i) => {
+                            const row = Math.floor(i / 5);
+                            const col = i % 5;
+                            const cx = 115 + col * 77;
+                            const cy = 88 + row * 58;
+                            const isMystery = step === 0 && b.type === 'blanca';
+                            const dim = step === 2 && b.type !== 'blanca';
+                            const glow = step >= 1 && b.type === 'blanca';
+                            return (
+                                <g key={i} opacity={dim ? 0.22 : 1} className="svg-pop" style={{ animationDelay: `${i * 0.025}s` }}>
+                                    {glow && <circle cx={cx} cy={cy} r="25" fill="none" stroke="#facc15" strokeWidth="3.5" />}
+                                    <circle
+                                        cx={cx} cy={cy} r="20"
+                                        fill={isMystery ? "#cbd5e1" : b.fill}
+                                        stroke={isMystery ? "#64748b" : b.stroke}
+                                        strokeWidth="3"
+                                        strokeDasharray={isMystery ? "4 3" : "none"}
+                                    />
+                                    <text x={cx} y={cy + 5} textAnchor="middle" fontSize={isMystery ? "16" : "13"} fontWeight="900" fill={isMystery ? "#334155" : b.fg}>
+                                        {isMystery ? '?' : b.txt}
+                                    </text>
+                                </g>
+                            );
+                        })}
+                        {/* Barra inferior de 15 celdas */}
+                        <g>
+                            <text x="50" y="274" fontSize="13" fontWeight="900" fill="#334155">
+                                {step === 0 ? '6 Negras + 4 Rojas + ? = 15' : step === 1 ? '¡5 Bolas Blancas encontradas!' : '5 blancas de 15 totales:'}
+                            </text>
+                            <text x="490" y="274" textAnchor="end" fontSize="14" fontWeight="900" fill="#0369a1">
+                                {step === 2 ? 'P = 5 / 15' : 'Total = 15'}
+                            </text>
+                            {balls.map((b, i) => {
+                                const isW = b.type === 'blanca';
+                                const fill = step === 0 && isW ? '#cbd5e1' : (step === 2 && !isW ? '#e2e8f0' : (isW ? '#38bdf8' : b.fill));
+                                return (
+                                    <rect key={i} x={50 + i * 29.4} y="284" width="25" height="34" rx="5" fill={fill} stroke="#334155" strokeWidth="1.5" />
+                                );
+                            })}
+                        </g>
+                    </svg>
+                );
+            }
+
+            // --- EJERCICIO 6: LANZAMIENTO DE 2 MONEDAS (DIAGRAMA DE ÁRBOL -> 4) ---
+            if (exerciseId === 6) {
+                const showL2 = step >= 1;
+                const showPairs = step >= 2;
+                const isFinal = step === 3;
+                const outcomes = [
+                    { y: 78, c1: 'C', c2: 'C', label: '(C, C)', bg: '#fef08a', bd: '#ca8a04' },
+                    { y: 148, c1: 'C', c2: 'S', label: '(C, S)', bg: '#dbeafe', bd: '#2563eb' },
+                    { y: 218, c1: 'S', c2: 'C', label: '(S, C)', bg: '#dcfce7', bd: '#16a34a' },
+                    { y: 288, c1: 'S', c2: 'S', label: '(S, S)', bg: '#fce7f3', bd: '#db2777' }
+                ];
+
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Diagrama de árbol para 2 monedas">
+                        <text x="270" y="24" textAnchor="middle" fontSize="15.5" fontWeight="900" fill="#1e293b">
+                            {step === 0 ? 'Diagrama de Árbol: Moneda 1 (2 opciones)' : step === 1 ? 'Ramificamos Moneda 2 (2 × 2 = 4 caminos)' : step === 2 ? 'Resultados del Espacio Muestral Ω' : '¡Total: n(Ω) = 4 elementos!'}
+                        </text>
+                        {/* Encabezados de columnas */}
+                        <text x="155" y="48" textAnchor="middle" fontSize="12" fontWeight="900" fill="#6366f1">MONEDA 1</text>
+                        {showL2 && <text x="285" y="48" textAnchor="middle" fontSize="12" fontWeight="900" fill="#0891b2">MONEDA 2</text>}
+                        {showPairs && <text x="425" y="48" textAnchor="middle" fontSize="12" fontWeight="900" fill="#16a34a">RESULTADOS (Ω)</text>}
+
+                        {/* Ramas Nivel 1 */}
+                        <line x1="60" y1="183" x2="155" y2="113" stroke="#6366f1" strokeWidth="4" className="branch-draw" />
+                        <line x1="60" y1="183" x2="155" y2="253" stroke="#6366f1" strokeWidth="4" className="branch-draw" />
+
+                        {/* Ramas Nivel 2 */}
+                        {showL2 && (
+                            <g>
+                                <line x1="155" y1="113" x2="285" y2="78" stroke="#0891b2" strokeWidth="3.5" className="branch-draw" />
+                                <line x1="155" y1="113" x2="285" y2="148" stroke="#0891b2" strokeWidth="3.5" className="branch-draw" />
+                                <line x1="155" y1="253" x2="285" y2="218" stroke="#0891b2" strokeWidth="3.5" className="branch-draw" />
+                                <line x1="155" y1="253" x2="285" y2="288" stroke="#0891b2" strokeWidth="3.5" className="branch-draw" />
+                            </g>
+                        )}
+
+                        {/* Nodo Inicio */}
+                        <circle cx="52" cy="183" r="24" fill="#4f46e5" stroke="#ffffff" strokeWidth="3" />
+                        <text x="52" y="188" textAnchor="middle" fontSize="12" fontWeight="900" fill="#ffffff">Inicio</text>
+
+                        {/* Monedas Nivel 1 */}
+                        <CoinSVG cx={155} cy={113} r={22} side="C" delay={0.1} />
+                        <CoinSVG cx={155} cy={253} r={22} side="S" delay={0.15} />
+
+                        {/* Monedas Nivel 2 y Resultados */}
+                        {showL2 && outcomes.map((o, i) => (
+                            <g key={i}>
+                                <CoinSVG cx={285} cy={o.y} r={19} side={o.c2} delay={i * 0.08} />
+                                {showPairs && (
+                                    <g className="svg-pop" style={{ animationDelay: `${i * 0.08}s` }}>
+                                        <line x1="308" y1={o.y} x2="348" y2={o.y} stroke="#94a3b8" strokeWidth="2.5" strokeDasharray="4 3" />
+                                        <rect x="352" y={o.y - 21} width="132" height="42" rx="12" fill={o.bg} stroke={o.bd} strokeWidth="3" />
+                                        <text x="418" y={o.y + 6} textAnchor="middle" fontSize="17" fontWeight="900" fill="#0f172a">{o.label}</text>
+                                        {isFinal && (
+                                            <g>
+                                                <circle cx="504" cy={o.y} r="15" fill="#f59e0b" stroke="#ffffff" strokeWidth="2.5" />
+                                                <text x="504" y={o.y + 5} textAnchor="middle" fontSize="13" fontWeight="900" fill="#ffffff">{i + 1}</text>
+                                            </g>
+                                        )}
+                                    </g>
+                                )}
+                            </g>
+                        ))}
+
+                        {isFinal && (
+                            <g className="svg-pop">
+                                <rect x="135" y="318" width="270" height="34" rx="12" fill="#fde047" stroke="#ca8a04" strokeWidth="3" />
+                                <text x="270" y="340" textAnchor="middle" fontSize="16" fontWeight="900" fill="#713f12">★ n(Ω) = 2 × 2 = 4 ★</text>
+                            </g>
+                        )}
+                    </svg>
+                );
+            }
+
+            // --- EJERCICIO 7: LANZAMIENTO DE 3 MONEDAS (ÁRBOL DE 3 NIVELES -> 8) ---
+            if (exerciseId === 7) {
+                const showL2 = step >= 1;
+                const showL3 = step >= 2;
+                const isFinal = step === 3;
+
+                const l1 = [
+                    { y: 112, s: 'C' },
+                    { y: 248, s: 'S' }
+                ];
+                const l2 = [
+                    { y: 78, py: 112, s: 'C' },
+                    { y: 146, py: 112, s: 'S' },
+                    { y: 214, py: 248, s: 'C' },
+                    { y: 282, py: 248, s: 'S' }
+                ];
+                const l3 = [
+                    { y: 58, py: 78, s: 'C', txt: 'CCC' },
+                    { y: 94, py: 78, s: 'S', txt: 'CCS' },
+                    { y: 130, py: 146, s: 'C', txt: 'CSC' },
+                    { y: 166, py: 146, s: 'S', txt: 'CSS' },
+                    { y: 202, py: 214, s: 'C', txt: 'SCC' },
+                    { y: 238, py: 214, s: 'S', txt: 'SCS' },
+                    { y: 274, py: 282, s: 'C', txt: 'SSC' },
+                    { y: 310, py: 282, s: 'S', txt: 'SSS' }
+                ];
+
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Diagrama de árbol para 3 monedas">
+                        <text x="270" y="22" textAnchor="middle" fontSize="15" fontWeight="900" fill="#1e293b">
+                            {step === 0 ? 'Nivel 1: Moneda 1 (2 ramas)' : step === 1 ? 'Nivel 2: Moneda 2 (4 ramas)' : step === 2 ? 'Nivel 3: Moneda 3 (8 combinaciones)' : '¡Principio de Multiplicación: 2³ = 8!'}
+                        </text>
+                        <text x="128" y="40" textAnchor="middle" fontSize="11" fontWeight="900" fill="#6366f1">M1 (2)</text>
+                        {showL2 && <text x="235" y="40" textAnchor="middle" fontSize="11" fontWeight="900" fill="#0891b2">M2 (4)</text>}
+                        {showL3 && <text x="342" y="40" textAnchor="middle" fontSize="11" fontWeight="900" fill="#10b981">M3 (8)</text>}
+                        {showL3 && <text x="448" y="40" textAnchor="middle" fontSize="11" fontWeight="900" fill="#b45309">Ω</text>}
+
+                        {/* Ramas Nivel 1 */}
+                        {l1.map((n, i) => <line key={i} x1="42" y1="180" x2="128" y2={n.y} stroke="#6366f1" strokeWidth="3.5" className="branch-draw" />)}
+
+                        {/* Ramas Nivel 2 */}
+                        {showL2 && l2.map((n, i) => <line key={i} x1="128" y1={n.py} x2="235" y2={n.y} stroke="#0891b2" strokeWidth="3" className="branch-draw" />)}
+
+                        {/* Ramas Nivel 3 */}
+                        {showL3 && l3.map((n, i) => <line key={i} x1="235" y1={n.py} x2="342" y2={n.y} stroke="#10b981" strokeWidth="2.5" className="branch-draw" />)}
+
+                        {/* Inicio */}
+                        <circle cx="38" cy="180" r="18" fill="#4f46e5" stroke="#ffffff" strokeWidth="2.5" />
+                        <text x="38" y="184" textAnchor="middle" fontSize="10" fontWeight="900" fill="#ffffff">Ini</text>
+
+                        {/* Nodos Nivel 1 */}
+                        {l1.map((n, i) => <CoinSVG key={i} cx={128} cy={n.y} r={17} side={n.s} delay={i * 0.08} />)}
+
+                        {/* Nodos Nivel 2 */}
+                        {showL2 && l2.map((n, i) => <CoinSVG key={i} cx={235} cy={n.y} r={15} side={n.s} delay={i * 0.06} />)}
+
+                        {/* Nodos Nivel 3 + Hojas */}
+                        {showL3 && l3.map((n, i) => (
+                            <g key={i}>
+                                <CoinSVG cx={342} cy={n.y} r={13} side={n.s} delay={i * 0.04} />
+                                <g className="svg-pop" style={{ animationDelay: `${i * 0.04}s` }}>
+                                    <rect x="376" y={n.y - 13} width="96" height="26" rx="8" fill={isFinal ? "#fef08a" : "#f1f5f9"} stroke={isFinal ? "#ca8a04" : "#94a3b8"} strokeWidth="2" />
+                                    <text x="424" y={n.y + 5} textAnchor="middle" fontSize="13.5" fontWeight="900" fill="#0f172a">{n.txt}</text>
+                                    {isFinal && (
+                                        <g>
+                                            <circle cx="496" cy={n.y} r="12" fill="#10b981" stroke="#ffffff" strokeWidth="2" />
+                                            <text x="496" y={n.y + 4} textAnchor="middle" fontSize="11" fontWeight="900" fill="#ffffff">{i + 1}</text>
+                                        </g>
+                                    )}
+                                </g>
+                            </g>
+                        ))}
+
+                        {isFinal && (
+                            <g className="svg-pop">
+                                <rect x="130" y="328" width="280" height="28" rx="10" fill="#fde047" stroke="#ca8a04" strokeWidth="2.5" />
+                                <text x="270" y="347" textAnchor="middle" fontSize="14.5" fontWeight="900" fill="#713f12">★ n(Ω) = 2³ = 8 elementos ★</text>
+                            </g>
+                        )}
+                    </svg>
+                );
+            }
+
+            // --- EJERCICIO 8: TIRO LIBRE DE FÚTBOL (GOL / NO GOL -> 2) ---
+            if (exerciseId === 8) {
+                if (step === 0) {
+                    return (
+                        <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Cancha de fútbol con tiro libre al arco">
+                            <text x="270" y="24" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">Experimento: Juan patea un tiro libre al arco</text>
+                            {/* Césped */}
+                            <rect x="28" y="38" width="484" height="266" rx="22" fill="#22c55e" stroke="#15803d" strokeWidth="4" />
+                            {/* Franjas de césped */}
+                            <rect x="28" y="38" width="96" height="266" fill="#16a34a" opacity="0.28" />
+                            <rect x="220" y="38" width="96" height="266" fill="#16a34a" opacity="0.28" />
+                            <rect x="412" y="38" width="100" height="266" fill="#16a34a" opacity="0.28" />
+                            {/* Área grande */}
+                            <rect x="120" y="38" width="300" height="125" fill="none" stroke="#ffffff" strokeWidth="3" />
+                            {/* Arco */}
+                            <rect x="180" y="42" width="180" height="42" fill="#f8fafc" opacity="0.45" stroke="#ffffff" strokeWidth="5" />
+                            {/* Arquero */}
+                            <g className="svg-pop">
+                                <circle cx="270" cy="76" r="10" fill="#fde047" stroke="#0f172a" strokeWidth="2" />
+                                <rect x="260" y="86" width="20" height="18" rx="5" fill="#f97316" stroke="#0f172a" strokeWidth="2" />
+                            </g>
+                            {/* Barrera (3 jugadores) */}
+                            {[215, 240, 265].map((bx, i) => (
+                                <g key={i}>
+                                    <circle cx={bx} cy="156" r="8" fill="#fef3c7" stroke="#0f172a" strokeWidth="1.5" />
+                                    <rect x={bx - 8} y="164" width="16" height="18" rx="4" fill="#ef4444" stroke="#ffffff" strokeWidth="1.5" />
+                                </g>
+                            ))}
+                            {/* Trayectorias punteadas */}
+                            <path d="M 270 264 Q 320 175 295 66" fill="none" stroke="#fde047" strokeWidth="4" strokeDasharray="8 6" className="branch-draw" />
+                            <path d="M 270 264 Q 170 175 138 66" fill="none" stroke="#fca5a5" strokeWidth="4" strokeDasharray="8 6" className="branch-draw" />
+                            {/* Balón */}
+                            <circle cx="270" cy="264" r="15" fill="#ffffff" stroke="#0f172a" strokeWidth="3" className="svg-pop" />
+                            <polygon points="270,256 276,262 274,270 266,270 264,262" fill="#0f172a" />
+                            <text x="330" y="270" fontSize="14" fontWeight="900" fill="#ffffff">Juan ⚽</text>
+
+                            <rect x="85" y="314" width="370" height="34" rx="12" fill="#eff6ff" stroke="#3b82f6" strokeWidth="2.5" />
+                            <text x="270" y="336" textAnchor="middle" fontSize="14" fontWeight="900" fill="#1d4ed8">¿Cuáles son los resultados posibles del disparo?</text>
+                        </svg>
+                    );
+                }
+
+                const isFinal = step === 2;
+                return (
+                    <svg viewBox="0 0 540 360" className="w-full h-full max-h-[390px]" role="img" aria-label="Espacio muestral del tiro libre: Gol y No gol">
+                        <text x="270" y="26" textAnchor="middle" fontSize="16" fontWeight="900" fill="#1e293b">
+                            {isFinal ? '¡Contamos los 2 resultados posibles en Ω!' : 'Espacio Muestral del Tiro Libre (Ω)'}
+                        </text>
+                        {/* Contenedor Ω */}
+                        <rect x="28" y="42" width="484" height="236" rx="30" fill="#f8fafc" stroke={isFinal ? "#f59e0b" : "#4f46e5"} strokeWidth="4" strokeDasharray={isFinal ? "none" : "10 6"} />
+                        <rect x="46" y="30" width="54" height="28" rx="10" fill={isFinal ? "#f59e0b" : "#4f46e5"} />
+                        <text x="73" y="50" textAnchor="middle" fontSize="17" fontWeight="900" fill="#ffffff">Ω</text>
+
+                        {/* Tarjeta 1: GOL */}
+                        <g className="svg-pop">
+                            {isFinal && <rect x="52" y="70" width="204" height="186" rx="22" fill="none" stroke="#facc15" strokeWidth="5" className="animate-pulseGold" />}
+                            <rect x="58" y="76" width="192" height="174" rx="18" fill="#dcfce7" stroke="#16a34a" strokeWidth="4" />
+                            {/* Mini arco + balón adentro */}
+                            <rect x="92" y="98" width="124" height="62" rx="6" fill="#ffffff" stroke="#15803d" strokeWidth="3.5" />
+                            <line x1="123" y1="98" x2="123" y2="160" stroke="#bbf7d0" strokeWidth="2" />
+                            <line x1="154" y1="98" x2="154" y2="160" stroke="#bbf7d0" strokeWidth="2" />
+                            <line x1="185" y1="98" x2="185" y2="160" stroke="#bbf7d0" strokeWidth="2" />
+                            <circle cx="154" cy="132" r="16" fill="#ffffff" stroke="#0f172a" strokeWidth="3" />
+                            <polygon points="154,124 160,130 158,138 150,138 148,130" fill="#0f172a" />
+                            {/* Estrella */}
+                            <polygon points="198,108 202,116 211,117 204,123 206,132 198,127 190,132 192,123 185,117 194,116" fill="#facc15" stroke="#ca8a04" strokeWidth="1.5" />
+                            <text x="154" y="202" textAnchor="middle" fontSize="24" fontWeight="900" fill="#15803d">¡GOL!</text>
+                            <text x="154" y="226" textAnchor="middle" fontSize="12.5" fontWeight="800" fill="#166534">El balón entra al arco</text>
+                            {isFinal && (
+                                <g>
+                                    <circle cx="242" cy="84" r="16" fill="#f59e0b" stroke="#ffffff" strokeWidth="2.5" />
+                                    <text x="242" y="90" textAnchor="middle" fontSize="15" fontWeight="900" fill="#ffffff">1</text>
+                                </g>
+                            )}
+                        </g>
+
+                        {/* Tarjeta 2: NO GOL */}
+                        <g className="svg-pop" style={{ animationDelay: '0.12s' }}>
+                            {isFinal && <rect x="284" y="70" width="204" height="186" rx="22" fill="none" stroke="#facc15" strokeWidth="5" className="animate-pulseGold" />}
+                            <rect x="290" y="76" width="192" height="174" rx="18" fill="#ffe4e6" stroke="#e11d48" strokeWidth="4" />
+                            {/* Mini arco + balón desviado */}
+                            <rect x="316" y="106" width="110" height="54" rx="6" fill="#ffffff" stroke="#94a3b8" strokeWidth="3" />
+                            <circle cx="448" cy="108" r="14" fill="#ffffff" stroke="#0f172a" strokeWidth="2.5" />
+                            <line x1="428" y1="126" x2="466" y2="88" stroke="#e11d48" strokeWidth="4" strokeLinecap="round" />
+                            <line x1="466" y1="126" x2="428" y2="88" stroke="#e11d48" strokeWidth="4" strokeLinecap="round" />
+                            <text x="386" y="202" textAnchor="middle" fontSize="24" fontWeight="900" fill="#be123c">NO GOL</text>
+                            <text x="386" y="226" textAnchor="middle" fontSize="12.5" fontWeight="800" fill="#9f1239">Falla o ataja el arquero</text>
+                            {isFinal && (
+                                <g>
+                                    <circle cx="474" cy="84" r="16" fill="#f59e0b" stroke="#ffffff" strokeWidth="2.5" />
+                                    <text x="474" y="90" textAnchor="middle" fontSize="15" fontWeight="900" fill="#ffffff">2</text>
+                                </g>
+                            )}
+                        </g>
+
+                        <rect x="120" y="296" width="300" height="44" rx="16" fill={isFinal ? "#fde047" : "#e0e7ff"} stroke={isFinal ? "#ca8a04" : "#4f46e5"} strokeWidth="3.5" className="svg-pop" />
+                        <text x="270" y="324" textAnchor="middle" fontSize="18" fontWeight="900" fill={isFinal ? "#713f12" : "#312e81"}>
+                            {isFinal ? '★ n(Ω) = 2 elementos ★' : 'Ω = { Gol, No gol }'}
+                        </text>
+                    </svg>
+                );
+            }
+
+            return null;
+        });
+
+        // =========================================================================
+        // 7. BASE DE DATOS DE LOS 8 EJERCICIOS (6TO GRADO PRIMARIA - VERIFICADOS)
+        // =========================================================================
+        const EXERCISES = [
+            {
+                id: 1,
+                title: "Reto 1",
+                subtitle: "Espacio Muestral (Dado)",
+                cardGradient: "from-violet-500/50 to-purple-700/50",
+                badgeColor: "bg-violet-500",
+                previewLatex: String.raw`\Omega = \{1,2,3,4,5,6\} \implies n(\Omega)=6`,
+                enunciado: () => (
+                    <span>Se lanza un dado sobre la mesa. ¿Cuántos elementos tiene el espacio muestral de este experimento?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Definición",
+                        latex: String.raw`\Omega = \text{conjunto de todos los resultados posibles}`,
+                        robotSpeech: "El espacio muestral (Ω) reúne TODOS los resultados que pueden salir al lanzar el dado."
+                    },
+                    {
+                        badge: "Espacio Muestral",
+                        latex: String.raw`\Omega = \{1,\; 2,\; 3,\; 4,\; 5,\; 6\}`,
+                        robotSpeech: "Un dado común tiene 6 caras numeradas del 1 al 6. ¡Mira cómo aparecen las 6 caras en el diagrama!"
+                    },
+                    {
+                        badge: "Respuesta",
+                        latex: String.raw`n(\Omega) = 6 \text{ elementos}`,
+                        robotSpeech: "¡Contamos las caras dentro de Ω! En total el espacio muestral tiene 6 elementos."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "Reto 2",
+                subtitle: "Dado: Menor que 4",
+                cardGradient: "from-emerald-500/50 to-teal-700/50",
+                badgeColor: "bg-emerald-500",
+                previewLatex: String.raw`P(A) = \frac{3}{6} = \frac{1}{2}`,
+                enunciado: () => (
+                    <span>¿Cuál es la probabilidad de que al lanzar un dado sobre una mesa, resulte un número <strong>menor que 4</strong>?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Casos Totales",
+                        latex: String.raw`\Omega = \{1, 2, 3, 4, 5, 6\} \implies n(\Omega) = 6`,
+                        robotSpeech: "Primero identificamos los casos totales: al lanzar un dado hay 6 resultados posibles."
+                    },
+                    {
+                        badge: "Casos Favorables",
+                        latex: String.raw`A = \{1, 2, 3\} \implies n(A) = 3`,
+                        robotSpeech: "Buscamos números MENORES que 4. ¡Ojo! El 4 no entra; solo cumplen el 1, 2 y 3 (3 casos favorables)."
+                    },
+                    {
+                        badge: "Regla de Laplace",
+                        latex: String.raw`P(A) = \dfrac{n(A)}{n(\Omega)} = \dfrac{3}{6}`,
+                        robotSpeech: "Aplicamos la Regla de Laplace: dividimos los casos favorables (3) entre los casos totales (6)."
+                    },
+                    {
+                        badge: "Simplificación",
+                        latex: String.raw`P(A) = \dfrac{3 \div 3}{6 \div 3} = \dfrac{1}{2}`,
+                        robotSpeech: "Simplificamos sacando tercia arriba y abajo. ¡3 de 6 es exactamente la mitad: 1/2 (50%)!"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "Reto 3",
+                subtitle: "Dado: Menor que 3",
+                cardGradient: "from-blue-500/50 to-indigo-700/50",
+                badgeColor: "bg-blue-500",
+                previewLatex: String.raw`P(B) = \frac{2}{6} = \frac{1}{3}`,
+                enunciado: () => (
+                    <span>¿Cuál es la probabilidad de que al lanzar un dado sobre una mesa, resulte un número <strong>menor que 3</strong>?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Casos Totales",
+                        latex: String.raw`\Omega = \{1, 2, 3, 4, 5, 6\} \implies n(\Omega) = 6`,
+                        robotSpeech: "Al lanzar un dado común, nuestro espacio muestral siempre tiene 6 resultados posibles."
+                    },
+                    {
+                        badge: "Casos Favorables",
+                        latex: String.raw`B = \{1, 2\} \implies n(B) = 2`,
+                        robotSpeech: "Los números estrictamente menores que 3 son únicamente el 1 y el 2. ¡Solo 2 casos favorables!"
+                    },
+                    {
+                        badge: "Regla de Laplace",
+                        latex: String.raw`P(B) = \dfrac{n(B)}{n(\Omega)} = \dfrac{2}{6}`,
+                        robotSpeech: "Dividimos los 2 casos favorables entre los 6 casos totales: obtenemos la fracción 2/6."
+                    },
+                    {
+                        badge: "Simplificación",
+                        latex: String.raw`P(B) = \dfrac{2 \div 2}{6 \div 2} = \dfrac{1}{3}`,
+                        robotSpeech: "Sacamos mitad al numerador y al denominador. ¡2 de 6 equivale exactamente a 1/3!"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Reto 4",
+                subtitle: "Baraja de 52 Cartas",
+                cardGradient: "from-rose-500/50 to-red-700/50",
+                badgeColor: "bg-rose-500",
+                previewLatex: String.raw`P(C) = \frac{4}{52} = \frac{1}{13}`,
+                enunciado: () => (
+                    <span>¿Cuál es la probabilidad de obtener un <strong>as</strong> al extraer una carta de una baraja de 52?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Casos Totales",
+                        latex: String.raw`n(\Omega) = 4 \text{ palos} \times 13 \text{ cartas} = 52`,
+                        robotSpeech: "Una baraja completa tiene 4 palos (♥, ♦, ♣, ♠) y 13 cartas en cada palo: 52 cartas en total."
+                    },
+                    {
+                        badge: "Casos Favorables",
+                        latex: String.raw`C = \{A\heartsuit,\; A\diamondsuit,\; A\clubsuit,\; A\spadesuit\} \implies n(C) = 4`,
+                        robotSpeech: "En toda la baraja hay exactamente 4 ases, uno por cada palo. ¡Míralos brillar en la primera columna!"
+                    },
+                    {
+                        badge: "Regla de Laplace",
+                        latex: String.raw`P(C) = \dfrac{n(C)}{n(\Omega)} = \dfrac{4}{52}`,
+                        robotSpeech: "Colocamos los 4 ases favorables arriba y las 52 cartas totales abajo: 4/52."
+                    },
+                    {
+                        badge: "Simplificación",
+                        latex: String.raw`P(C) = \dfrac{4 \div 4}{52 \div 4} = \dfrac{1}{13}`,
+                        robotSpeech: "Dividimos entre 4 arriba y abajo. Como cada palo tiene 1 As de 13 cartas, la probabilidad es 1/13."
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "Reto 5",
+                subtitle: "Urna con Bolas de Colores",
+                cardGradient: "from-sky-500/50 to-cyan-700/50",
+                badgeColor: "bg-sky-500",
+                previewLatex: String.raw`P(\text{Blanca}) = \frac{5}{15} = \frac{1}{3}`,
+                enunciado: () => (
+                    <span>En una urna hay <strong>15 bolas</strong> del mismo tamaño y material: <strong>6 negras</strong>, <strong>4 rojas</strong> y el resto <strong>blancas</strong>. ¿Cuál es la probabilidad de que al extraer una resulte blanca?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Datos en la Urna",
+                        latex: String.raw`\text{Total} = 15, \quad \text{Negras} = 6, \quad \text{Rojas} = 4`,
+                        robotSpeech: "Tenemos 15 bolas en total: 6 negras, 4 rojas y las demás son blancas. ¡Averigüemos cuántas blancas hay!"
+                    },
+                    {
+                        badge: "Hallar las Blancas",
+                        latex: String.raw`\text{Blancas} = 15 - (6 + 4) = 15 - 10 = 5`,
+                        robotSpeech: "Sumamos las negras y rojas (6 + 4 = 10) y restamos del total: 15 − 10 = 5 bolas blancas."
+                    },
+                    {
+                        badge: "Regla de Laplace",
+                        latex: String.raw`P(\text{Blanca}) = \dfrac{5}{15}`,
+                        robotSpeech: "Ahora dividimos las 5 bolas blancas (favorables) entre las 15 bolas totales de la urna: 5/15."
+                    },
+                    {
+                        badge: "Simplificación",
+                        latex: String.raw`P(\text{Blanca}) = \dfrac{5 \div 5}{15 \div 5} = \dfrac{1}{3}`,
+                        robotSpeech: "Sacamos quinta arriba y abajo. ¡Si ordenamos las 15 bolas en 3 grupos de 5, 1 grupo completo es blanco: 1/3!"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                title: "Reto 6",
+                subtitle: "Lanzamiento de 2 Monedas",
+                cardGradient: "from-amber-500/50 to-orange-600/50",
+                badgeColor: "bg-amber-500",
+                previewLatex: String.raw`n(\Omega) = 2 \times 2 = 2^2 = 4`,
+                enunciado: () => (
+                    <span>Se lanza <strong>dos monedas</strong> simultáneamente. ¿Cuántos elementos tiene el espacio muestral de este experimento?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Moneda 1",
+                        latex: String.raw`\text{Moneda 1}: \{C,\; S\} \quad (2 \text{ opciones})`,
+                        robotSpeech: "Cada moneda puede caer en Cara (C) o Sello (S). Empecemos el diagrama de árbol con la primera moneda."
+                    },
+                    {
+                        badge: "Moneda 2",
+                        latex: String.raw`\text{Cada opción se ramifica en } C \text{ o } S`,
+                        robotSpeech: "Por cada resultado de la primera moneda, la segunda también puede salir Cara (C) o Sello (S)."
+                    },
+                    {
+                        badge: "Espacio Muestral",
+                        latex: String.raw`\Omega = \{(C,C),\; (C,S),\; (S,C),\; (S,S)\}`,
+                        robotSpeech: "Siguiendo cada camino del árbol obtenemos las 4 parejas posibles: CC, CS, SC y SS."
+                    },
+                    {
+                        badge: "Respuesta",
+                        latex: String.raw`n(\Omega) = 2 \times 2 = 2^2 = 4 \text{ elementos}`,
+                        robotSpeech: "¡Multiplicamos 2 × 2 = 4! El espacio muestral al lanzar dos monedas tiene 4 elementos."
+                    }
+                ]
+            },
+            {
+                id: 7,
+                title: "Reto 7",
+                subtitle: "Lanzamiento de 3 Monedas",
+                cardGradient: "from-fuchsia-500/50 to-pink-700/50",
+                badgeColor: "bg-fuchsia-500",
+                previewLatex: String.raw`n(\Omega) = 2 \times 2 \times 2 = 2^3 = 8`,
+                enunciado: () => (
+                    <span>Se lanza <strong>3 monedas</strong> sobre la mesa. ¿Cuántos elementos tiene el espacio muestral de este experimento?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Moneda 1",
+                        latex: String.raw`\text{Moneda 1}: 2 \text{ opciones } (C,\; S)`,
+                        robotSpeech: "Construyamos el diagrama de árbol paso a paso. La primera moneda abre 2 caminos: Cara (C) o Sello (S)."
+                    },
+                    {
+                        badge: "Moneda 2",
+                        latex: String.raw`\text{Con 2 monedas}: 2 \times 2 = 4 \text{ ramas}`,
+                        robotSpeech: "Al lanzar la segunda moneda, cada camino se duplica: ya tenemos 4 combinaciones intermedias."
+                    },
+                    {
+                        badge: "Moneda 3",
+                        latex: String.raw`\Omega = \{CCC, CCS, CSC, CSS, SCC, SCS, SSC, SSS\}`,
+                        robotSpeech: "La tercera moneda vuelve a duplicar cada camino, formando las 8 combinaciones posibles del espacio muestral."
+                    },
+                    {
+                        badge: "Respuesta",
+                        latex: String.raw`n(\Omega) = 2 \times 2 \times 2 = 2^3 = 8 \text{ elementos}`,
+                        robotSpeech: "¡Contamos las 8 ramas finales! Por principio de multiplicación: 2 × 2 × 2 = 8 elementos."
+                    }
+                ]
+            },
+            {
+                id: 8,
+                title: "Reto 8",
+                subtitle: "Tiro Libre de Fútbol",
+                cardGradient: "from-lime-500/50 to-green-700/50",
+                badgeColor: "bg-lime-600",
+                previewLatex: String.raw`\Omega = \{\text{Gol},\; \text{No gol}\} \implies n(\Omega)=2`,
+                enunciado: () => (
+                    <span>Juan patea un <strong>tiro libre</strong>. ¿Cuántos elementos tiene el espacio muestral del tiro libre?</span>
+                ),
+                steps: [
+                    {
+                        badge: "Analizar Experimento",
+                        latex: String.raw`\text{Experimento: patear un tiro libre al arco}`,
+                        robotSpeech: "Juan se prepara para patear el tiro libre. Pensemos en los resultados fundamentales de su disparo."
+                    },
+                    {
+                        badge: "Espacio Muestral",
+                        latex: String.raw`\Omega = \{\text{Gol},\; \text{No gol}\}`,
+                        robotSpeech: "Al patear al arco solo pueden ocurrir dos resultados básicos: ¡hace GOL o NO hace gol (falla/atajan)!"
+                    },
+                    {
+                        badge: "Respuesta",
+                        latex: String.raw`n(\Omega) = 2 \text{ elementos}`,
+                        robotSpeech: "Como hay 2 resultados posibles bien definidos, el espacio muestral del tiro libre tiene 2 elementos."
+                    }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // 8. COMPONENTES DECORATIVOS: FONDO FLOTANTE, CONFETI Y ROBOT ASISTENTE
+        // =========================================================================
+        const FloatingBackground = memo(() => {
+            const symbols = ['P(A)', 'Ω', '%', '½', '⅓', '🎲', '🪙', '♠'];
+            const elements = Array.from({ length: 26 }).map((_, i) => ({
+                id: i,
+                symbol: symbols[i % symbols.length],
+                left: `${(i * 3.8 + 2) % 96}%`,
+                animationDuration: `${11 + (i % 7) * 2.2}s`,
+                animationDelay: `-${(i * 1.4) % 20}s`,
+                fontSize: `${1.25 + (i % 4) * 0.6}rem`,
+                opacity: 0.08 + (i % 3) * 0.04
+            }));
+            return (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                    {elements.map((el) => (
+                        <div
+                            key={el.id}
+                            className="absolute text-white font-black animate-floatUp select-none drop-shadow-lg"
+                            style={{
+                                left: el.left,
+                                bottom: '-15%',
+                                fontSize: el.fontSize,
+                                opacity: el.opacity,
+                                animationDuration: el.animationDuration,
+                                animationDelay: el.animationDelay
+                            }}
+                        >
+                            {el.symbol}
+                        </div>
+                    ))}
+                </div>
+            );
+        });
+
+        const Confetti = memo(() => {
+            const colors = ['#fde047', '#60a5fa', '#f472b6', '#34d399', '#a78bfa', '#fb923c'];
+            const pieces = Array.from({ length: 110 }).map((_, i) => ({
+                id: i,
+                left: `${50 + (Math.random() * 20 - 10)}%`,
+                color: colors[i % colors.length],
+                tx: `${(Math.random() - 0.5) * 820}px`,
+                ty: `${(Math.random() - 1) * 760}px`,
+                rot: `${Math.random() * 720}deg`,
+                delay: `${Math.random() * 0.2}s`
+            }));
+            return (
+                <div className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center overflow-hidden">
+                    {pieces.map((p) => (
+                        <div
+                            key={p.id}
+                            className="absolute w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full animate-confettiExplosion shadow-sm"
+                            style={{
+                                backgroundColor: p.color,
+                                '--tx': p.tx,
+                                '--ty': p.ty,
+                                '--rot': p.rot,
+                                animationDelay: p.delay,
+                                left: p.left,
+                                top: '50%'
+                            }}
+                        />
+                    ))}
+                </div>
+            );
+        });
+
+        const RobotAssistant = ({ step, maxSteps }) => {
+            const isFinalStep = step >= maxSteps;
+            const isThinking = step === maxSteps - 1 && maxSteps > 1;
+
+            const getContainerAnim = () => {
+                if (isFinalStep) return 'animate-robotJump';
+                if (isThinking) return 'animate-robotThinkTilt';
+                return 'animate-robotFloat';
+            };
+            const getArmLAnim = () => {
+                if (isFinalStep) return 'rotate-[150deg] animate-pulse';
+                if (step > 0) return 'animate-robotTalkArmL';
+                return 'rotate-45';
+            };
+            const getArmRAnim = () => {
+                if (isFinalStep) return '-rotate-[150deg] animate-pulse';
+                if (step > 0) return 'animate-robotTalkArmR';
+                return '-rotate-45';
+            };
+
+            const getEyes = () => {
+                if (isFinalStep) return <div className="w-full flex justify-between px-1"><div className="w-2.5 h-1.5 bg-emerald-400 rounded-t-full mt-0.5"></div><div className="w-2.5 h-1.5 bg-emerald-400 rounded-t-full mt-0.5"></div></div>;
+                if (step === 0) return <div className="w-full flex justify-between px-1.5"><div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div><div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div></div>;
+                return <div className="w-full flex justify-between px-1"><div className="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-bounce"></div><div className="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-bounce"></div></div>;
+            };
+            const getMouth = () => {
+                if (isFinalStep) return <div className="w-4 h-2.5 bg-rose-400 rounded-b-full mt-1"></div>;
+                if (step === 0) return <div className="w-3 h-1 bg-cyan-300 rounded-full mt-1"></div>;
+                return <div className="w-2.5 h-2.5 bg-rose-400 rounded-full mt-1 animate-ping"></div>;
+            };
+
+            return (
+                <div className={`relative flex flex-col items-center drop-shadow-xl select-none ${getContainerAnim()}`}>
+                    <div className="relative z-0 flex flex-col items-center translate-y-1">
+                        <div className={`w-2.5 h-2.5 rounded-full shadow-[0_0_10px_currentColor] z-10 transition-colors duration-300 ${isFinalStep ? 'text-emerald-400 bg-emerald-400' : 'text-yellow-400 bg-yellow-400 animate-pulse'}`}></div>
+                        <div className="w-1.5 h-3 bg-slate-300"></div>
+                    </div>
+                    <div className="relative z-10 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-white to-slate-200 rounded-xl border-[2.5px] border-indigo-400 shadow-xl flex flex-col items-center justify-center p-1">
+                        <div className="w-full h-full bg-slate-900 rounded-lg flex flex-col items-center justify-center p-1 shadow-inner border-[1.5px] border-indigo-500">
+                            {getEyes()}
+                            {getMouth()}
+                        </div>
+                    </div>
+                    <div className={`absolute top-1/2 -left-1.5 w-2 h-4 bg-slate-200 border-[2px] border-indigo-400 rounded-full z-0 origin-top ${getArmLAnim()}`}></div>
+                    <div className={`absolute top-1/2 -right-1.5 w-2 h-4 bg-slate-200 border-[2px] border-indigo-400 rounded-full z-0 origin-top ${getArmRAnim()}`}></div>
+                </div>
+            );
+        };
+
+        // =========================================================================
+        // 9. APLICACIÓN PRINCIPAL
+        // =========================================================================
+        function App() {
+            const [view, setView] = useState('home');
+            const [exIdx, setExIdx] = useState(0);
+            const [step, setStep] = useState(0);
+            const [isMuted, setIsMuted] = useState(false);
+            const scrollContainerRef = useRef(null);
+
+            const curEx = EXERCISES[exIdx];
+            const maxSteps = curEx.steps.length - 1;
+            const curStepData = curEx.steps[step];
+            const EnunciadoText = curEx.enunciado;
+
+            const handleInteraction = () => {
+                AudioController.init();
+                AudioController.startBGM();
+            };
+
+            const startExercise = (index) => {
+                handleInteraction();
+                AudioController.play('swoosh');
+                setExIdx(index);
+                setStep(0);
+                setView('lab');
+            };
+
+            const nextStep = () => {
+                handleInteraction();
+                if (step < maxSteps) {
+                    const next = step + 1;
+                    setStep(next);
+                    AudioController.play(next === maxSteps ? 'success' : 'pop');
+                } else {
+                    AudioController.play('swoosh');
+                    if (exIdx < EXERCISES.length - 1) {
+                        setExIdx(exIdx + 1);
+                        setStep(0);
+                    } else {
+                        setView('home');
+                    }
+                }
+            };
+
+            const prevStep = () => {
+                handleInteraction();
+                if (step > 0) {
+                    setStep(step - 1);
+                    AudioController.play('pop-reverse');
+                }
+            };
+
+            const toggleMute = () => {
+                handleInteraction();
+                setIsMuted(AudioController.toggleMute());
+            };
+
+            useEffect(() => {
+                if (scrollContainerRef.current) {
+                    scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+                }
+            }, [step, exIdx, view]);
+
+            // ------------------------- VISTA PORTADA -------------------------
+            if (view === 'home') {
+                return (
+                    <div className="w-screen h-[100dvh] bg-gradient-to-br from-[#1e3a8a] via-[#4338ca] to-[#be185d] flex flex-col items-center justify-start p-4 sm:p-6 relative font-fun overflow-y-auto scrollbar-hide">
+                        <FloatingBackground />
+
+                        {/* Barra superior de portada */}
+                        <div className="w-[96%] max-w-[1400px] z-20 flex items-center justify-between mb-6 sm:mb-8 mt-1">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border-2 border-yellow-300 bg-white/15 backdrop-blur-md text-yellow-300 font-black tracking-wider uppercase shadow-md text-xs sm:text-base">
+                                <Rocket className="w-5 h-5 text-yellow-300" /> TuProfe20 Lab
+                            </div>
+                            <button onClick={toggleMute} title="Activar/Silenciar audio" className="p-2.5 sm:p-3 rounded-2xl bg-white/20 border-2 border-white/30 backdrop-blur-md text-white hover:bg-white/30 transition-all active:scale-95">
+                                {isMuted ? <VolumeX className="w-5 h-5 sm:w-6 sm:h-6" /> : <Volume2 className="w-5 h-5 sm:w-6 sm:h-6" />}
+                            </button>
+                        </div>
+
+                        {/* Títulos llamativos */}
+                        <div className="relative z-10 text-center w-[96%] max-w-[1400px] flex flex-col items-center pb-10">
+                            <span className="px-5 py-1.5 rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-950 font-black uppercase tracking-widest text-xs sm:text-sm mb-3 shadow-lg">
+                                Aritmética • Sexto Grado
+                            </span>
+                            <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-white mb-4 drop-shadow-[0_6px_0_rgba(0,0,0,0.3)] tracking-tight leading-none uppercase">
+                                <span className="text-yellow-300 underline decoration-wavy decoration-cyan-400 underline-offset-8">PROBABILIDAD</span>
+                            </h1>
+                            <p className="text-sm sm:text-lg lg:text-xl text-purple-100 mb-8 sm:mb-10 font-bold max-w-3xl leading-relaxed">
+                                8 retos explicados paso a paso con esquemas gráficos interactivos y pizarra digital 🎲🪙⚽🤖
+                            </p>
+
+                            {/* Cuadrícula de 8 tarjetas llamativas (4 cols desktop / 2 cols tablet / 1 col móvil) */}
+                            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                                {EXERCISES.map((ex, idx) => (
+                                    <button
+                                        key={ex.id}
+                                        onClick={() => startExercise(idx)}
+                                        className="group text-left p-4 rounded-[1.6rem] bg-white/10 backdrop-blur-xl border-[3px] border-white/35 hover:border-yellow-300 hover:-translate-y-2 hover:shadow-[0_18px_32px_rgba(0,0,0,0.38)] transition-all flex flex-col relative overflow-hidden shadow-lg min-h-[11rem]"
+                                    >
+                                        <div className={`absolute inset-0 bg-gradient-to-br ${ex.cardGradient} opacity-85 group-hover:opacity-100 transition-opacity`}></div>
+                                        <div className="relative z-10 flex-1 flex flex-col">
+                                            <div className="flex items-center justify-between mb-2.5">
+                                                <span className={`${ex.badgeColor} text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm`}>
+                                                    {ex.title}
+                                                </span>
+                                                <span className="text-white/95 text-xs font-extrabold bg-black/20 px-2.5 py-0.5 rounded-full">
+                                                    {ex.steps.length} pasos
+                                                </span>
+                                            </div>
+                                            <div className="flex-1 my-1.5 bg-white/95 rounded-xl px-2.5 py-2.5 text-slate-900 shadow-inner flex items-center justify-center border border-white/60 pointer-events-none math-card">
+                                                <MathDisplay latex={ex.previewLatex} align="center" />
+                                            </div>
+                                            <div className="text-white text-sm sm:text-base font-black text-center mt-2 drop-shadow-md">
+                                                {ex.subtitle}
+                                            </div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // ------------------------- VISTA LABORATORIO -------------------------
+            return (
+                <div className="w-screen h-[100dvh] bg-gradient-to-br from-[#0f172a] via-[#312e81] to-[#831843] text-slate-800 flex flex-col p-2 sm:p-3.5 relative font-fun overflow-hidden">
+                    <FloatingBackground />
+                    {step === maxSteps && <Confetti />}
+
+                    {/* Barra superior de navegación */}
+                    <div className="shrink-0 relative z-10 w-[98%] max-w-[1440px] mx-auto flex justify-between items-center mb-2.5 px-1 gap-2">
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => { AudioController.play('swoosh'); setView('home'); }}
+                                className="flex items-center justify-center px-3.5 py-2 rounded-[1rem] bg-white/10 border-[2.5px] border-white/30 backdrop-blur-md text-white font-black hover:bg-white/20 transition-all shadow-lg active:scale-95 text-xs sm:text-sm"
+                            >
+                                <Home className="w-4 h-4 sm:w-5 sm:h-5 sm:mr-1.5" />
+                                <span className="hidden sm:inline">Portada</span>
+                            </button>
+                            <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 border border-yellow-300/40 text-yellow-300 font-black text-xs uppercase tracking-wider">
+                                <Rocket className="w-4 h-4" /> Aritmética • Sexto Grado
+                            </div>
+                        </div>
+
+                        {/* Selector numérico 1 al 8 */}
+                        <div className="flex items-center gap-1.5 bg-black/35 p-1.5 rounded-[1rem] border-2 border-white/20 backdrop-blur-md shadow-lg overflow-x-auto scrollbar-hide max-w-[60vw]">
+                            {EXERCISES.map((ex, i) => (
+                                <button
+                                    key={ex.id}
+                                    onClick={() => startExercise(i)}
+                                    className={`shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-[0.75rem] font-black text-xs sm:text-sm transition-all ${
+                                        exIdx === i
+                                            ? 'bg-yellow-400 text-slate-900 scale-110 shadow-[0_0_12px_rgba(250,204,21,0.75)]'
+                                            : 'text-white hover:bg-white/20'
+                                    }`}
+                                >
+                                    {ex.id}
+                                </button>
+                            ))}
+                        </div>
+
+                        <button onClick={toggleMute} title="Audio" className="p-2 sm:p-2.5 rounded-[1rem] bg-white/10 border-[2.5px] border-white/30 text-white hover:bg-white/20 transition-all shadow-lg active:scale-95">
+                            {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                        </button>
+                    </div>
+
+                    {/* Contenedor principal de la pizarra */}
+                    <div className="flex-1 min-h-0 relative z-10 w-[98%] max-w-[1440px] mx-auto bg-white rounded-[1.8rem] sm:rounded-[2.2rem] border-[5px] sm:border-[7px] border-slate-100 shadow-[0_25px_55px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden">
+                        
+                        {/* Encabezado oscuro con enunciado */}
+                        <div className="shrink-0 bg-slate-900 border-b-[4px] border-cyan-500 px-4 py-2.5 sm:px-6 sm:py-3 flex flex-col justify-center relative shadow-md z-20">
+                            <div className="flex justify-between items-center w-full max-w-6xl mx-auto mb-1.5">
+                                <span className="bg-cyan-400 text-slate-950 font-black text-xs sm:text-sm px-3 py-0.5 rounded-md uppercase tracking-widest shadow-sm">
+                                    {curEx.title}
+                                </span>
+                                <span className="text-yellow-300 font-extrabold text-xs sm:text-sm bg-white/10 px-3 py-0.5 rounded-md">
+                                    {curEx.subtitle}
+                                </span>
+                            </div>
+                            <div className="text-white font-bold text-base sm:text-lg md:text-xl text-center w-full max-w-5xl mx-auto leading-snug math-enunciado">
+                                <EnunciadoText />
+                            </div>
+                        </div>
+
+                        {/* Cuerpo dividido 50% / 50% */}
+                        <div className="flex-1 flex flex-col md:flex-row bg-slate-50 overflow-hidden relative">
+                            
+                            {/* PANEL IZQUIERDO: DESARROLLO OPERATIVO PASO A PASO SIN CAJAS */}
+                            <div
+                                ref={scrollContainerRef}
+                                className="w-full md:w-1/2 flex-1 px-5 py-5 sm:px-8 sm:py-6 overflow-y-auto scrollbar-hide flex flex-col gap-4 pb-20 relative z-10 border-b-2 md:border-b-0 md:border-r-2 border-slate-200/70"
+                            >
+                                <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(#0f172a_1.5px,transparent_1.5px)] [background-size:20px_20px] pointer-events-none"></div>
+                                
+                                <div className="relative z-10 flex items-center justify-between border-b border-slate-200 pb-2">
+                                    <span className="text-xs font-black uppercase tracking-widest text-indigo-600">
+                                        Desarrollo Paso a Paso
+                                    </span>
+                                    <span className="text-xs font-extrabold text-slate-400">
+                                        <MathDisplay inline latex="P(A)=\frac{n(A)}{n(\Omega)}" />
+                                    </span>
+                                </div>
+
+                                {curEx.steps.slice(0, step + 1).map((s, idx) => {
+                                    const isCurrent = idx === step;
+                                    const isFinal = isCurrent && step === maxSteps;
+                                    return (
+                                        <div
+                                            key={`${exIdx}-${idx}`}
+                                            className={`relative z-10 pl-4 py-1.5 transition-all duration-300 border-l-[4px] border-b border-slate-200/60 last:border-b-0 ${
+                                                isFinal
+                                                    ? 'border-l-amber-400 animate-finalGlow rounded-r-xl pr-3 opacity-100 animate-slideInRight'
+                                                    : isCurrent
+                                                        ? 'border-l-cyan-500 opacity-100 animate-slideInRight'
+                                                        : 'border-l-slate-300 opacity-50'
+                                            }`}
+                                        >
+                                            <div className="mb-1 flex items-center gap-2">
+                                                <span
+                                                    className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full font-black text-[11px] sm:text-xs tracking-wide ${
+                                                        isFinal
+                                                            ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-sm'
+                                                            : isCurrent
+                                                                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-sm'
+                                                                : 'bg-slate-200 text-slate-600'
+                                                    }`}
+                                                >
+                                                    {isCurrent && <Sparkles className="w-3.5 h-3.5" />}
+                                                    {s.badge}
+                                                </span>
+                                            </div>
+                                            {/* Expresión matemática limpia y fluida SIN cajas cerradas */}
+                                            <div
+                                                className={`py-0.5 ${
+                                                    isFinal
+                                                        ? 'math-final'
+                                                        : isCurrent
+                                                            ? 'math-current'
+                                                            : 'math-history'
+                                                }`}
+                                            >
+                                                <MathDisplay latex={s.latex} align="left" />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* PANEL DERECHO: ESQUEMA GRÁFICO INTERACTIVO SVG */}
+                            <div className="w-full md:w-1/2 flex-1 bg-white/80 p-3 sm:p-5 flex flex-col items-center justify-center relative z-10 pointer-events-none">
+                                <h3 className="absolute top-3 left-4 font-black text-slate-400 uppercase tracking-widest text-[11px] sm:text-xs flex items-center gap-1.5 z-20">
+                                    <Shapes className="w-4 h-4 text-cyan-500" /> Esquema Gráfico
+                                </h3>
+                                <div className="w-full h-full flex items-center justify-center pt-5 pointer-events-auto">
+                                    <ProbabilityGraphic key={`g-${exIdx}-${step}`} exerciseId={curEx.id} step={step} />
+                                </div>
+                            </div>
+
+                            {/* Pizarra digital superpuesta */}
+                            <DrawingCanvas />
+                        </div>
+
+                        {/* Barra del Robot Asistente */}
+                        <div className="shrink-0 bg-white w-full px-4 py-2 sm:px-6 sm:py-2.5 flex items-center gap-3 sm:gap-5 border-t-[3px] border-slate-100 z-30 relative shadow-[0_-8px_18px_rgba(0,0,0,0.04)]">
+                            <div className="shrink-0 absolute -top-9 sm:relative sm:top-0 left-3 sm:left-0 drop-shadow-xl z-50">
+                                <RobotAssistant step={step} maxSteps={maxSteps} />
+                            </div>
+                            <div className="flex-1 text-xs sm:text-sm md:text-base font-bold text-slate-700 leading-snug bg-blue-50/90 px-3 py-2 sm:px-4 sm:py-2.5 rounded-[1rem] border-2 border-blue-100 min-h-[2.8rem] flex items-center shadow-sm ml-[3.4rem] sm:ml-0">
+                                <div key={`speech-${exIdx}-${step}`} className="animate-slideInRight w-full">
+                                    {curStepData.robotSpeech}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Controles de navegación inferiores */}
+                        <div className="shrink-0 bg-gradient-to-b from-[#e0e7ff] to-[#c7d2fe] p-2 sm:p-2.5 w-full flex flex-col items-center border-t-[3px] border-white z-40">
+                            <div className="flex justify-center items-stretch w-full max-w-4xl gap-2 sm:gap-3 h-9 sm:h-10">
+                                <button
+                                    onClick={prevStep}
+                                    disabled={step === 0}
+                                    className="flex-[0.8] bg-[#a5b4fc] border-b-[4px] border-[#6366f1] text-[#312e81] rounded-l-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1 active:border-b-0 active:translate-y-[4px] disabled:opacity-40 transition-all hover:bg-[#c7d2fe]"
+                                >
+                                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3px]" />
+                                    <span className="hidden sm:inline">Atrás</span>
+                                </button>
+                                <div className="bg-[#6366f1] text-white font-black px-3 sm:px-5 text-xs sm:text-sm flex items-center justify-center border-b-[4px] border-[#4338ca] shadow-inner whitespace-nowrap min-w-[4.5rem]">
+                                    Paso {step + 1}/{maxSteps + 1}
+                                </div>
+                                <button
+                                    onClick={nextStep}
+                                    className={`flex-[2] border-b-[4px] text-white rounded-r-xl font-black text-xs sm:text-sm flex items-center justify-center gap-1 active:border-b-0 active:translate-y-[4px] transition-all shadow-sm hover:brightness-110 ${
+                                        step === maxSteps
+                                            ? 'bg-gradient-to-r from-[#10b981] to-[#047857] border-[#065f46] animate-pulse'
+                                            : 'bg-gradient-to-r from-[#06b6d4] to-[#0284c7] border-[#0369a1]'
+                                    }`}
+                                >
+                                    <span>
+                                        {step < maxSteps
+                                            ? '¡Siguiente Paso!'
+                                            : exIdx < EXERCISES.length - 1
+                                                ? `Siguiente Reto (${curEx.id + 1})`
+                                                : '¡Volver!'}
+                                    </span>
+                                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 stroke-[3px]" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
